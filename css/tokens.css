@@ -1,0 +1,55 @@
+@layer tokens {
+  :root {
+    color-scheme: light dark;
+
+    /* Color: monochrome frame, one accent */
+    --canvas: light-dark(#f4f4f6, #000000);
+    --surface: light-dark(#ffffff, #1c1c1f);
+    --ink: light-dark(#1b1b1f, #f5f5f7);
+    --graphite: light-dark(#4e4e56, #a8a8b3);
+    --hairline: light-dark(#dcdce1, #2e2e33);
+    --iris: light-dark(#4336c4, #a9a2ff);
+    --on-iris: light-dark(#ffffff, #0d0a33);
+
+    /* Type */
+    --font: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --fs-name: clamp(2.25rem, 1.6rem + 2vw, 3.25rem);
+    --fs-title: 1.33rem;
+    --fs-modal-title: 2.07rem;
+    --fs-body: 1.0625rem;
+    --fs-small: 0.875rem;
+
+    /* Space: one gap for gutter, sidebar-to-grid and tile-to-tile */
+    --gap: clamp(1rem, 0.6rem + 1.2vw, 1.5rem);
+    --s-1: 0.25rem;
+    --s-2: 0.5rem;
+    --s-3: 0.75rem;
+    --s-4: 1rem;
+    --s-5: 1.5rem;
+    --s-6: 2rem;
+    --s-7: 3rem;
+    --s-8: 4rem;
+
+    /* Shape */
+    --r-panel: 1.75rem;
+    --r-tile: 1.25rem;
+    --r-pill: 999px;
+
+    /* Motion */
+    --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+    --t-hover: 240ms;
+    --t-open: 450ms;
+    --t-close: 350ms;
+    --t-theme: 250ms;
+  }
+
+  :root[data-theme="light"] { color-scheme: light; }
+  :root[data-theme="dark"] { color-scheme: dark; }
+
+  @supports (corner-shape: squircle) {
+    :root {
+      --r-panel: 2.25rem;
+      --r-tile: 1.6rem;
+    }
+  }
+}

@@ -1,0 +1,325 @@
+@layer components {
+  /* Theme control */
+  .theme {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    display: grid;
+    gap: var(--s-2);
+  }
+
+  .theme legend {
+    padding: 0;
+    margin-bottom: var(--s-2);
+    color: var(--graphite);
+    font-size: var(--fs-small);
+    font-weight: 500;
+  }
+
+  .theme__options {
+    display: flex;
+    padding: var(--s-1);
+    border-radius: var(--r-pill);
+    background: var(--canvas);
+  }
+
+  .theme__options input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .theme__options label {
+    flex: 1;
+    display: grid;
+    place-items: center;
+    min-height: 2.75rem;
+    padding-inline: var(--s-3);
+    border-radius: var(--r-pill);
+    font-size: var(--fs-small);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--t-hover) var(--ease-out),
+      color var(--t-hover) var(--ease-out);
+  }
+
+  .theme__options input:checked + label {
+    background: var(--iris);
+    color: var(--on-iris);
+  }
+
+  .theme__options input:focus-visible + label {
+    outline: 3px solid var(--iris);
+    outline-offset: 3px;
+  }
+
+  /* Project tile */
+  .project { min-width: 0; }
+
+  .tile {
+    position: relative;
+    display: block;
+    aspect-ratio: 1;
+    overflow: hidden;
+    isolation: isolate;
+    border-radius: var(--r-tile);
+    background: var(--surface);
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .tile__cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: scale var(--t-hover) var(--ease-out);
+  }
+
+  .tile__caption {
+    position: absolute;
+    inset-inline: var(--s-3);
+    inset-block-end: var(--s-3);
+    display: grid;
+    gap: var(--s-1);
+    padding: var(--s-3) var(--s-4);
+    border-radius: calc(var(--r-tile) - var(--s-3));
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    opacity: 0;
+    translate: 0 0.75rem;
+    transition: opacity var(--t-hover) var(--ease-out),
+      translate var(--t-hover) var(--ease-out);
+  }
+
+  .tile__title {
+    font-size: var(--fs-body);
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    line-height: 1.25;
+  }
+
+  .tile__tagline {
+    color: var(--graphite);
+    font-size: var(--fs-small);
+    line-height: 1.4;
+  }
+
+  .tile:focus-visible .tile__caption {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  .tile:focus-visible .tile__cover { scale: 1.04; }
+
+  @media (hover: hover) {
+    .tile:hover .tile__cover { scale: 1.04; }
+    .tile:hover .tile__caption {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+
+  @media (hover: none) {
+    .tile__caption {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+
+  /* Project dialog */
+  .project-dialog {
+    width: min(64rem, calc(100% - 2 * var(--gap)));
+    max-width: none;
+    max-height: calc(100dvh - 2 * var(--gap));
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-radius: var(--r-panel);
+    background: var(--surface);
+    color: var(--ink);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    box-shadow: 0 1.5rem 5rem rgb(0 0 0 / 0.35);
+  }
+
+  .project-dialog::backdrop {
+    background: color-mix(in srgb, var(--canvas) 60%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  html:has(dialog[open]) { overflow: hidden; }
+
+  .dialog__close {
+    position: sticky;
+    top: var(--s-5);
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    /* Inset by the image's own edge gap (--s-3) so it floats evenly inside the image corner */
+    margin: var(--s-5) var(--s-5) -4.25rem auto;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--surface) 85%, transparent);
+    color: var(--ink);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    transition: background-color var(--t-hover) var(--ease-out);
+  }
+
+  .dialog__close:hover { background: var(--canvas); }
+
+  .dialog__close svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  .dialog__content {
+    display: grid;
+    gap: var(--s-5);
+    padding: var(--s-3) var(--s-3) var(--s-7);
+  }
+
+  .dialog__cover {
+    width: 100%;
+    aspect-ratio: 2 / 1;
+    max-height: 50dvh;
+    object-fit: cover;
+    border-radius: calc(var(--r-panel) - var(--s-3));
+  }
+
+  .dialog__text {
+    display: grid;
+    gap: var(--s-5);
+    width: 100%;
+    max-width: 64ch;
+    padding-inline: var(--s-5);
+  }
+
+  .dialog__title {
+    font-size: var(--fs-modal-title);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .dialog__title:focus { outline: none; }
+
+  .project__details { display: grid; gap: var(--s-5); }
+
+  .project__tagline {
+    color: var(--graphite);
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+
+  .project__meta {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: var(--s-2) var(--s-5);
+    padding-block: var(--s-4);
+    border-block: 1px solid var(--hairline);
+    font-size: var(--fs-small);
+  }
+
+  .project__meta dt { color: var(--graphite); font-weight: 500; }
+  .project__meta dd { font-weight: 500; }
+
+  .project__body { display: grid; gap: var(--s-4); }
+  .project__body h3 {
+    margin-top: var(--s-3);
+    font-size: 1.33rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  .project__body figure { display: grid; gap: var(--s-2); margin-block: var(--s-3); }
+  .project__body figure img { border-radius: var(--s-4); }
+  .project__body figcaption { color: var(--graphite); font-size: var(--fs-small); }
+
+  /* Fallback open/close motion (when View Transitions are unavailable or not in use) */
+  :root:not([data-vt]) .project-dialog {
+    transition: opacity var(--t-open) var(--ease-out),
+      scale var(--t-open) var(--ease-out),
+      overlay var(--t-open) allow-discrete,
+      display var(--t-open) allow-discrete;
+    opacity: 0;
+    scale: 0.96;
+  }
+
+  :root:not([data-vt]) .project-dialog[open] {
+    opacity: 1;
+    scale: 1;
+  }
+
+  :root:not([data-vt]) .project-dialog::backdrop {
+    opacity: 0;
+    transition: opacity var(--t-open) var(--ease-out),
+      overlay var(--t-open) allow-discrete,
+      display var(--t-open) allow-discrete;
+  }
+
+  :root:not([data-vt]) .project-dialog[open]::backdrop { opacity: 1; }
+
+  @starting-style {
+    :root:not([data-vt]) .project-dialog[open] {
+      opacity: 0;
+      scale: 0.96;
+    }
+    :root:not([data-vt]) .project-dialog[open]::backdrop { opacity: 0; }
+  }
+
+  @media (max-width: 39.999em) {
+    .project-dialog {
+      width: 100%;
+      height: calc(100dvh - var(--gap));
+      max-height: none;
+      margin: auto 0 0;
+      border-end-start-radius: 0;
+      border-end-end-radius: 0;
+    }
+
+    :root:not([data-vt]) .project-dialog {
+      scale: 1;
+      translate: 0 100%;
+    }
+
+    :root:not([data-vt]) .project-dialog[open] { translate: 0 0; }
+
+    @starting-style {
+      :root:not([data-vt]) .project-dialog[open] { scale: 1; translate: 0 100%; }
+    }
+
+    .dialog__text { padding-inline: var(--s-2); }
+  }
+
+  /* View Transitions (tile <-> dialog morph, theme crossfade) */
+  ::view-transition-group(root) {
+    animation-duration: var(--t-theme);
+    animation-timing-function: var(--ease-out);
+  }
+
+  :root[data-vt="open"]::view-transition-group(*),
+  :root[data-vt="close"]::view-transition-group(*) {
+    animation-timing-function: var(--ease-out);
+  }
+
+  :root[data-vt="open"]::view-transition-group(*) { animation-duration: var(--t-open); }
+  :root[data-vt="close"]::view-transition-group(*) { animation-duration: var(--t-close); }
+
+  ::view-transition-old(project-cover),
+  ::view-transition-new(project-cover) {
+    height: 100%;
+    object-fit: cover;
+    overflow: clip;
+  }
+}

@@ -1,0 +1,102 @@
+@layer states {
+  @media (prefers-reduced-motion: reduce) {
+    .tile__cover,
+    .tile:hover .tile__cover,
+    .tile:focus-visible .tile__cover { scale: 1; transition: none; }
+
+    .tile__caption { translate: 0 0; transition: opacity 120ms linear; }
+
+    :root:not([data-vt]) .project-dialog,
+    :root:not([data-vt]) .project-dialog::backdrop {
+      translate: 0 0;
+      scale: 1;
+      transition: opacity 120ms linear, overlay 120ms allow-discrete, display 120ms allow-discrete;
+    }
+
+    @starting-style {
+      :root:not([data-vt]) .project-dialog[open] { translate: 0 0; scale: 1; opacity: 0; }
+    }
+
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) { animation: none; }
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .tile__caption,
+    .dialog__close {
+      background: var(--surface);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+
+    .project-dialog::backdrop {
+      background: var(--canvas);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+  }
+
+  @media (prefers-contrast: more) {
+    :root {
+      --graphite: light-dark(#2f2f35, #d0d0d8);
+      --hairline: light-dark(#6e6e78, #8a8a94);
+    }
+
+    .tile {
+      outline: 1px solid var(--hairline);
+      outline-offset: -1px;
+    }
+
+    .tile__caption {
+      opacity: 1;
+      translate: 0 0;
+      background: var(--surface);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+
+    .profile,
+    .project-dialog { border: 1px solid var(--hairline); }
+  }
+
+  @media (forced-colors: active) {
+    .profile,
+    .tile,
+    .project-dialog { border: 1px solid CanvasText; }
+
+    .tile__caption {
+      opacity: 1;
+      translate: 0 0;
+      background: Canvas;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+      border: 1px solid CanvasText;
+    }
+
+    :focus-visible { outline-color: Highlight; }
+
+    .theme__options { border: 1px solid CanvasText; }
+    .theme__options input:checked + label {
+      background: Highlight;
+      color: HighlightText;
+      forced-color-adjust: none;
+    }
+
+    .dialog__close { border: 1px solid CanvasText; }
+  }
+
+  /* No JavaScript: everything readable inline, one column */
+  .no-js .theme { display: none; }
+  .no-js .project-grid { grid-template-columns: 1fr; }
+  .no-js .project {
+    display: grid;
+    gap: var(--s-5);
+    padding-block-end: var(--s-6);
+  }
+  .no-js .tile__caption {
+    opacity: 1;
+    translate: 0 0;
+  }
+  .js .project > .project__details { display: none; }
+}

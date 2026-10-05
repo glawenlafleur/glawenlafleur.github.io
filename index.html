@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Glawen LaFleur, product designer</title>
+  <meta name="description" content="Glawen LaFleur is a product designer who designs interfaces and builds them, with accessibility from the first sketch.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f4f4f6" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+  <meta property="og:title" content="Glawen LaFleur, product designer">
+  <meta property="og:description" content="I design interfaces and build them, with accessibility from the first sketch.">
+  <meta property="og:type" content="website">
+  <!-- TODO: add og:image and og:url once the site has a real address -->
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+
+  <!-- Runs before CSS: marks JS as available and applies a saved theme so there is no flash -->
+  <script>
+    (function () {
+      var d = document.documentElement;
+      d.className = d.className.replace("no-js", "js");
+      try {
+        var t = localStorage.getItem("theme");
+        if (t === "light" || t === "dark") d.setAttribute("data-theme", t);
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preload" href="assets/fonts/hanken-grotesk-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/layers.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/states.css">
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#projects">Skip to projects</a>
+
+  <div class="page">
+    <header class="profile">
+      <div class="profile__avatar" aria-hidden="true">GL</div>
+
+      <div class="profile__intro">
+        <h1 class="profile__name">Glawen LaFleur</h1>
+        <p class="profile__title">Product designer</p>
+        <p class="profile__tagline">I design interfaces and build them, with accessibility from the first sketch.</p>
+      </div>
+
+      <div class="profile__bio">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.</p>
+        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.</p>
+      </div>
+
+      <address class="profile__contact">
+        <h2 class="visually-hidden">Contact</h2>
+        <ul>
+          <!-- TODO: real URLs -->
+          <li><a href="mailto:hello@example.com">Email</a></li>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">GitHub</a></li>
+          <li><a href="#">Résumé (PDF)</a></li>
+        </ul>
+      </address>
+
+      <fieldset class="theme">
+        <legend>Appearance</legend>
+        <div class="theme__options">
+          <input type="radio" name="theme" id="theme-auto" value="auto" checked>
+          <label for="theme-auto">Auto</label>
+          <input type="radio" name="theme" id="theme-light" value="light">
+          <label for="theme-light">Light</label>
+          <input type="radio" name="theme" id="theme-dark" value="dark">
+          <label for="theme-dark">Dark</label>
+        </div>
+      </fieldset>
+    </header>
+
+    <main id="projects" tabindex="-1">
+      <h2 class="visually-hidden">Projects</h2>
+      <!--
+        To add a project, copy one <li class="project"> block, then:
+        1. Set the slug in id and href (lowercase, hyphenated, unique)
+        2. Add assets/projects/<slug>/cover.* (square, about 800x800)
+        3. Fill in the title, tagline, details and article
+        No JavaScript changes are needed.
+      -->
+      <ul class="project-grid">
+        <li class="project" id="lorem-ipsum">
+          <a class="tile" href="#lorem-ipsum">
+            <!-- TODO: replace with the real cover image; alt stays empty because the title names the link -->
+            <img class="tile__cover" src="assets/projects/lorem-ipsum/cover.svg" alt="" width="800" height="800" loading="lazy" decoding="async">
+            <div class="tile__caption">
+              <h3 class="tile__title">Lorem Ipsum</h3>
+              <p class="tile__tagline">Consectetur adipiscing elit sed do eiusmod.</p>
+            </div>
+          </a>
+          <div class="project__details">
+            <p class="project__tagline">Consectetur adipiscing elit sed do eiusmod.</p>
+            <dl class="project__meta">
+              <dt>Role</dt><dd>Lorem ipsum</dd>
+              <dt>Timeline</dt><dd>Dolor sit amet</dd>
+              <dt>Tools</dt><dd>Consectetur, adipiscing, elit</dd>
+            </dl>
+            <div class="project__body">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+              <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+              <h3>Sed ut perspiciatis</h3>
+              <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+              <figure>
+                <!-- TODO: real figure with descriptive alt text -->
+                <img src="assets/projects/lorem-ipsum/cover.svg" alt="Placeholder illustration of a phone screen" width="800" height="800" loading="lazy" decoding="async">
+                <figcaption>Lorem ipsum dolor sit amet, consectetur adipiscing.</figcaption>
+              </figure>
+              <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+            </div>
+          </div>
+        </li>
+        <li class="project" id="dolor-sit">
+          <a class="tile" href="#dolor-sit">
+            <!-- TODO: replace with the real cover image; alt stays empty because the title names the link -->
+            <img class="tile__cover" src="assets/projects/dolor-sit/cover.svg" alt="" width="800" height="800" loading="lazy" decoding="async">
+            <div class="tile__caption">
+              <h3 class="tile__title">Dolor Sit</h3>
+              <p class="tile__tagline">Ut enim ad minim veniam quis nostrud.</p>
+            </div>
+          </a>
+          <div class="project__details">
+            <p class="project__tagline">Ut enim ad minim veniam quis nostrud.</p>
+            <dl class="project__meta">
+              <dt>Role</dt><dd>Lorem ipsum</dd>
+              <dt>Timeline</dt><dd>Dolor sit amet</dd>
+              <dt>Tools</dt><dd>Consectetur, adipiscing, elit</dd>
+            </dl>
+            <div class="project__body">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+              <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+              <h3>Sed ut perspiciatis</h3>
+              <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+              <figure>
+                <!-- TODO: real figure with descriptive alt text -->
+                <img src="assets/projects/dolor-sit/cover.svg" alt="Placeholder illustration of a phone screen" width="800" height="800" loading="lazy" decoding="async">
+                <figcaption>Lorem ipsum dolor sit amet, consectetur adipiscing.</figcaption>
+              </figure>
+              <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+            </div>
+          </div>
+        </li>
+        <li class="project" id="amet-elit">
+          <a class="tile" href="#amet-elit">
+            <!-- TODO: replace with the real cover image; alt stays empty because the title names the link -->
+            <img class="tile__cover" src="assets/projects/amet-elit/cover.svg" alt="" width="800" height="800" loading="lazy" decoding="async">
+            <div class="tile__caption">
+              <h3 class="tile__title">Amet Elit</h3>
+              <p class="tile__tagline">Duis aute irure dolor in reprehenderit.</p>
+            </div>
+          </a>
+          <div class="project__details">
+            <p class="project__tagline">Duis aute irure dolor in reprehenderit.</p>
+            <dl class="project__meta">
+              <dt>Role</dt><dd>Lorem ipsum</dd>
+              <dt>Timeline</dt><dd>Dolor sit amet</dd>
+              <dt>Tools</dt><dd>Consectetur, adipiscing, elit</dd>
+            </dl>
+            <div class="project__body">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+              <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+              <h3>Sed ut perspiciatis</h3>
+              <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+              <figure>
+                <!-- TODO: real figure with descriptive alt text -->
+                <img src="assets/projects/amet-elit/cover.svg" alt="Placeholder illustration of a phone screen" width="800" height="800" loading="lazy" decoding="async">
+                <figcaption>Lorem ipsum dolor sit amet, consectetur adipiscing.</figcaption>
+              </figure>
+              <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </main>
+  </div>
+
+  <dialog id="project-dialog" class="project-dialog" aria-labelledby="dialog-title">
+    <button type="button" class="dialog__close" aria-label="Close project">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="dialog__content">
+      <img class="dialog__cover" alt="" width="1600" height="900">
+      <div class="dialog__text">
+        <h2 class="dialog__title" id="dialog-title" tabindex="-1"></h2>
+        <div class="dialog__slot"></div>
+      </div>
+    </div>
+  </dialog>
+</body>
+</html>

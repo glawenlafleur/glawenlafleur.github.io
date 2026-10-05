@@ -1,0 +1,127 @@
+@layer layout {
+  .page {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--gap);
+    padding: var(--gap);
+    max-width: 120rem;
+    margin-inline: auto;
+  }
+
+  /* Profile panel */
+  .profile {
+    display: grid;
+    gap: var(--s-4);
+    align-content: start;
+    padding: var(--s-5);
+    border-radius: var(--r-panel);
+    background: var(--surface);
+  }
+
+  .profile__avatar {
+    display: grid;
+    place-items: center;
+    width: 6rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--canvas);
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .profile__intro { display: grid; gap: var(--s-2); }
+
+  .profile__name {
+    font-size: var(--fs-name);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+  }
+
+  .profile__title {
+    font-size: var(--fs-title);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  .profile__tagline {
+    color: var(--graphite);
+    line-height: 1.5;
+    max-width: 34ch;
+  }
+
+  .profile__bio {
+    display: grid;
+    gap: var(--s-3);
+    max-width: 34ch;
+  }
+
+  .profile__contact ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1) var(--s-5);
+  }
+
+  .profile__contact a {
+    display: inline-block;
+    padding-block: var(--s-2);
+    font-weight: 500;
+  }
+
+  /* Project grid */
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: var(--gap);
+  }
+
+  /* Tablet: profile becomes a full-width intro, avatar beside the text */
+  @media (min-width: 40em) and (max-width: 63.999em) {
+    .profile {
+      grid-template-columns: auto 1fr;
+      column-gap: var(--s-6);
+    }
+    .profile__avatar { grid-row: span 3; }
+    .profile__intro,
+    .profile__bio,
+    .profile__contact { grid-column: 2; }
+    .profile .theme { grid-column: 1 / -1; }
+  }
+
+  /* Desktop: sidebar + grid, sidebar stays in view */
+  @media (min-width: 64em) {
+    .page {
+      grid-template-columns: clamp(17rem, 24vw, 22rem) 1fr;
+      align-items: start;
+    }
+
+    .profile {
+      position: sticky;
+      top: var(--gap);
+      height: calc(100dvh - 2 * var(--gap));
+      overflow-y: auto;
+      grid-template-rows: auto auto auto auto 1fr;
+    }
+
+    .profile .theme { align-self: end; }
+
+    .profile__contact ul {
+      display: grid;
+      grid-template-columns: repeat(2, max-content);
+    }
+  }
+
+  /* Short viewports (or heavy zoom): never trap content in a sticky panel */
+  @media (max-height: 40em) {
+    .profile {
+      position: static;
+      height: auto;
+      overflow: visible;
+    }
+  }
+
+  @media (max-width: 39.999em) {
+  }
+}
