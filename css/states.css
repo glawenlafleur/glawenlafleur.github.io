@@ -57,13 +57,19 @@
     }
 
     .profile,
+    .appearance,
     .project-dialog { border: 1px solid var(--hairline); }
+
+    .button { outline: 1px solid var(--hairline); outline-offset: -1px; }
   }
 
   @media (forced-colors: active) {
     .profile,
+    .appearance,
     .tile,
     .project-dialog { border: 1px solid CanvasText; }
+
+    .button { border: 1px solid CanvasText; }
 
     .tile__caption {
       opacity: 1;
@@ -76,7 +82,6 @@
 
     :focus-visible { outline-color: Highlight; }
 
-    .theme__options { border: 1px solid CanvasText; }
     .theme__options input:checked + label {
       background: Highlight;
       color: HighlightText;
@@ -87,7 +92,7 @@
   }
 
   /* No JavaScript: everything readable inline, one column */
-  .no-js .theme { display: none; }
+  .no-js .appearance { display: none; }
   .no-js .project-grid { grid-template-columns: 1fr; }
   .no-js .project {
     display: grid;

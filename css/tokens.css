@@ -10,6 +10,8 @@
     --hairline: light-dark(#dcdce1, #2e2e33);
     --iris: light-dark(#4336c4, #a9a2ff);
     --on-iris: light-dark(#ffffff, #0d0a33);
+    --fill: light-dark(rgb(0 0 0 / 0.05), rgb(255 255 255 / 0.08));
+    --fill-hover: light-dark(rgb(0 0 0 / 0.1), rgb(255 255 255 / 0.16));
 
     /* Type */
     --font: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -30,10 +32,12 @@
     --s-7: 3rem;
     --s-8: 4rem;
 
-    /* Shape */
-    --r-panel: 1.75rem;
-    --r-tile: 1.25rem;
-    --r-pill: 999px;
+    /* Shape: one corner radius for every outer shape (panels, tiles, modal) and
+       every pill (any control up to 6rem tall is fully rounded at 3rem).
+       Anything inset inside a shape uses --r-inner so the corners stay concentric. */
+    --r: 3rem;
+    --inset: 0.75rem;
+    --r-inner: calc(var(--r) - var(--inset));
 
     /* Motion */
     --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
@@ -46,10 +50,4 @@
   :root[data-theme="light"] { color-scheme: light; }
   :root[data-theme="dark"] { color-scheme: dark; }
 
-  @supports (corner-shape: squircle) {
-    :root {
-      --r-panel: 2.25rem;
-      --r-tile: 1.6rem;
-    }
-  }
 }

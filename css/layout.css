@@ -8,19 +8,27 @@
     margin-inline: auto;
   }
 
+  .sidebar {
+    display: grid;
+    gap: var(--gap);
+    align-content: start;
+  }
+
   /* Profile panel */
   .profile {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: var(--s-4);
-    align-content: start;
+    min-height: 0;
     padding: var(--s-5);
-    border-radius: var(--r-panel);
+    border-radius: var(--r);
     background: var(--surface);
   }
 
   .profile__avatar {
     display: grid;
     place-items: center;
+    flex: none;
     width: 6rem;
     aspect-ratio: 1;
     border-radius: 50%;
@@ -58,16 +66,12 @@
     max-width: 34ch;
   }
 
-  .profile__contact ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--s-1) var(--s-5);
-  }
+  .profile__contact { margin-top: auto; }
 
-  .profile__contact a {
-    display: inline-block;
-    padding-block: var(--s-2);
-    font-weight: 500;
+  .profile__contact ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-2);
   }
 
   /* Project grid */
@@ -77,9 +81,15 @@
     gap: var(--gap);
   }
 
+  /* Mobile: the appearance control is hidden; the site follows the system */
+  @media (max-width: 39.999em) {
+    .appearance { display: none; }
+  }
+
   /* Tablet: profile becomes a full-width intro, avatar beside the text */
   @media (min-width: 40em) and (max-width: 63.999em) {
     .profile {
+      display: grid;
       grid-template-columns: auto 1fr;
       column-gap: var(--s-6);
     }
@@ -87,41 +97,67 @@
     .profile__intro,
     .profile__bio,
     .profile__contact { grid-column: 2; }
-    .profile .theme { grid-column: 1 / -1; }
+    .appearance { width: min(100%, 22rem); }
   }
 
-  /* Desktop: sidebar + grid, sidebar stays in view */
+  /* Desktop: sidebar + grid */
   @media (min-width: 64em) {
     .page {
-      grid-template-columns: clamp(17rem, 24vw, 22rem) 1fr;
+      grid-template-columns: clamp(17rem, 24vw, 22rem) minmax(0, 1fr);
       align-items: start;
     }
+  }
 
-    .profile {
-      position: sticky;
-      top: var(--gap);
-      height: calc(100dvh - 2 * var(--gap));
+  /* Desktop with room: the page itself never scrolls. Only the project list does. */
+  @media (min-width: 64em) and (min-height: 40em) {
+    .page {
+      height: 100dvh;
+      grid-template-rows: minmax(0, 1fr);
+      align-items: stretch;
+    }
+
+    .sidebar {
+      grid-template-rows: minmax(0, 1fr) auto;
+      min-height: 0;
+    }
+
+    /* Safety net only: shows a scrollbar if the content ever cannot fit */
+    .profile { overflow-y: auto; }
+
+    /* Padding and negative margin give hover scale and focus rings room inside the scroller */
+    main {
+      min-height: 0;
+      padding: 0.5rem;
+      margin: -0.5rem;
       overflow-y: auto;
-      grid-template-rows: auto auto auto auto 1fr;
+      overscroll-behavior: contain;
     }
 
-    .profile .theme { align-self: end; }
-
-    .profile__contact ul {
-      display: grid;
-      grid-template-columns: repeat(2, max-content);
+    main:focus-visible {
+      outline-offset: -3px;
+      border-radius: var(--r);
     }
   }
 
-  /* Short viewports (or heavy zoom): never trap content in a sticky panel */
-  @media (max-height: 40em) {
-    .profile {
-      position: static;
-      height: auto;
-      overflow: visible;
-    }
+  /* Keep the whole sidebar visible without scrolling as the window gets shorter */
+  @media (min-width: 64em) and (min-height: 40em) and (max-height: 52em) {
+    .profile { gap: var(--s-3); }
+    .profile__avatar { width: 4.5rem; font-size: 1.5rem; }
+    .profile__name { font-size: 2.5rem; }
+    .profile__bio { gap: var(--s-2); font-size: 1rem; }
   }
 
-  @media (max-width: 39.999em) {
+  @media (min-width: 64em) and (min-height: 40em) and (max-height: 49em) {
+    .profile__avatar { display: none; }
+    .profile__name { font-size: 2.25rem; }
+    .profile__title { font-size: 1.15rem; }
+  }
+
+  @media (min-width: 64em) and (min-height: 40em) and (max-height: 46em) {
+    .profile { gap: var(--s-2); }
+    .profile__intro { gap: var(--s-1); }
+    .profile__tagline,
+    .profile__bio { font-size: 0.9375rem; line-height: 1.4; }
+    .profile__bio { gap: var(--s-1); }
   }
 }

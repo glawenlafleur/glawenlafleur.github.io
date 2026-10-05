@@ -1,27 +1,42 @@
 @layer components {
-  /* Theme control */
+  /* Contact buttons */
+  .button {
+    display: grid;
+    place-items: center;
+    min-height: 2.75rem;
+    padding: var(--s-2) var(--s-3);
+    border-radius: var(--r);
+    background: var(--fill);
+    color: var(--ink);
+    font-size: var(--fs-small);
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color var(--t-hover) var(--ease-out);
+  }
+
+  .button:hover { background: var(--fill-hover); }
+
+  /* Appearance: a floating pill under the profile panel. Same padding as the
+     profile panel, so the slider lines up with the contact buttons above. */
+  .appearance {
+    padding: var(--s-5);
+    border-radius: var(--r);
+    background: var(--surface);
+  }
+
   .theme {
     min-width: 0;
     margin: 0;
     padding: 0;
     border: 0;
-    display: grid;
-    gap: var(--s-2);
-  }
-
-  .theme legend {
-    padding: 0;
-    margin-bottom: var(--s-2);
-    color: var(--graphite);
-    font-size: var(--fs-small);
-    font-weight: 500;
   }
 
   .theme__options {
     display: flex;
-    padding: var(--s-1);
-    border-radius: var(--r-pill);
-    background: var(--canvas);
+    border-radius: var(--r);
+    background: var(--fill);
   }
 
   .theme__options input {
@@ -36,13 +51,15 @@
     place-items: center;
     min-height: 2.75rem;
     padding-inline: var(--s-3);
-    border-radius: var(--r-pill);
+    border-radius: var(--r);
     font-size: var(--fs-small);
     font-weight: 600;
     cursor: pointer;
     transition: background-color var(--t-hover) var(--ease-out),
       color var(--t-hover) var(--ease-out);
   }
+
+  .theme__options input:not(:checked) + label:hover { background: var(--fill); }
 
   .theme__options input:checked + label {
     background: var(--iris);
@@ -63,10 +80,24 @@
     aspect-ratio: 1;
     overflow: hidden;
     isolation: isolate;
-    border-radius: var(--r-tile);
+    border-radius: var(--r);
     background: var(--surface);
     color: var(--ink);
     text-decoration: none;
+    outline: 4px solid transparent;
+    outline-offset: 4px;
+    transition: outline-color var(--t-hover) var(--ease-out);
+  }
+
+  /* Hairline drawn over the cover so it never shifts the layout or the open/close transition.
+     The hover accent is the tile's outline: 4px thick, 4px clear of the tile. */
+  .tile::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--hairline);
+    border-radius: inherit;
+    pointer-events: none;
   }
 
   .tile__cover {
@@ -78,12 +109,12 @@
 
   .tile__caption {
     position: absolute;
-    inset-inline: var(--s-3);
-    inset-block-end: var(--s-3);
+    inset-inline: var(--inset);
+    inset-block-end: var(--inset);
     display: grid;
     gap: var(--s-1);
-    padding: var(--s-3) var(--s-4);
-    border-radius: calc(var(--r-tile) - var(--s-3));
+    padding: var(--s-3) var(--s-5);
+    border-radius: var(--r-inner);
     background: color-mix(in srgb, var(--surface) 88%, transparent);
     -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
@@ -106,6 +137,8 @@
     line-height: 1.4;
   }
 
+  .tile:focus-visible { outline-color: var(--iris); }
+
   .tile:focus-visible .tile__caption {
     opacity: 1;
     translate: 0 0;
@@ -113,7 +146,16 @@
 
   .tile:focus-visible .tile__cover { scale: 1.04; }
 
+  /* Closing a project hands focus back to its tile; that should not leave it looking selected */
+  .tile[data-restored]:focus-visible:not(:hover) { outline-color: transparent; }
+  .tile[data-restored]:focus-visible:not(:hover) .tile__cover { scale: 1; }
+  .tile[data-restored]:focus-visible:not(:hover) .tile__caption {
+    opacity: 0;
+    translate: 0 0.75rem;
+  }
+
   @media (hover: hover) {
+    .tile:hover { outline-color: var(--iris); }
     .tile:hover .tile__cover { scale: 1.04; }
     .tile:hover .tile__caption {
       opacity: 1;
@@ -136,7 +178,7 @@
     margin: auto;
     padding: 0;
     border: 0;
-    border-radius: var(--r-panel);
+    border-radius: var(--r);
     background: var(--surface);
     color: var(--ink);
     overflow-y: auto;
@@ -146,25 +188,24 @@
 
   .project-dialog::backdrop {
     background: color-mix(in srgb, var(--canvas) 60%, transparent);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
   }
 
   html:has(dialog[open]) { overflow: hidden; }
 
   .dialog__close {
     position: sticky;
-    top: var(--s-5);
+    top: calc(2 * var(--inset));
     z-index: 1;
     display: grid;
     place-items: center;
     width: 2.75rem;
     height: 2.75rem;
-    /* Inset by the image's own edge gap (--s-3) so it floats evenly inside the image corner */
-    margin: var(--s-5) var(--s-5) -4.25rem auto;
+    /* The cover is flush with the modal edges, so the button sits 2 x --inset from the corner,
+       which keeps it concentric with the modal's rounded corner */
+    margin: calc(2 * var(--inset)) calc(2 * var(--inset)) calc(-2.75rem - 2 * var(--inset)) auto;
     padding: 0;
-    border: 0;
-    border-radius: 50%;
+    border: 1px solid var(--hairline);
+    border-radius: var(--r);
     background: color-mix(in srgb, var(--surface) 85%, transparent);
     color: var(--ink);
     -webkit-backdrop-filter: blur(12px);
@@ -186,7 +227,7 @@
   .dialog__content {
     display: grid;
     gap: var(--s-5);
-    padding: var(--s-3) var(--s-3) var(--s-7);
+    padding: 0 0 var(--s-7);
   }
 
   .dialog__cover {
@@ -194,7 +235,6 @@
     aspect-ratio: 2 / 1;
     max-height: 50dvh;
     object-fit: cover;
-    border-radius: calc(var(--r-panel) - var(--s-3));
   }
 
   .dialog__text {
@@ -202,6 +242,7 @@
     gap: var(--s-5);
     width: 100%;
     max-width: 64ch;
+    margin-inline: auto;
     padding-inline: var(--s-5);
   }
 
@@ -215,6 +256,14 @@
   .dialog__title:focus { outline: none; }
 
   .project__details { display: grid; gap: var(--s-5); }
+
+  /* Justified body text; narrow phones keep a ragged edge, where justification leaves wide gaps */
+  @media (min-width: 40em) {
+    .project__body p {
+      text-align: justify;
+      hyphens: auto;
+    }
+  }
 
   .project__tagline {
     color: var(--graphite);
@@ -243,7 +292,7 @@
     line-height: 1.2;
   }
   .project__body figure { display: grid; gap: var(--s-2); margin-block: var(--s-3); }
-  .project__body figure img { border-radius: var(--s-4); }
+  .project__body figure img { border-radius: 4px; }
   .project__body figcaption { color: var(--graphite); font-size: var(--fs-small); }
 
   /* Fallback open/close motion (when View Transitions are unavailable or not in use) */
@@ -299,7 +348,6 @@
       :root:not([data-vt]) .project-dialog[open] { scale: 1; translate: 0 100%; }
     }
 
-    .dialog__text { padding-inline: var(--s-2); }
   }
 
   /* View Transitions (tile <-> dialog morph, theme crossfade) */
@@ -315,6 +363,55 @@
 
   :root[data-vt="open"]::view-transition-group(*) { animation-duration: var(--t-open); }
   :root[data-vt="close"]::view-transition-group(*) { animation-duration: var(--t-close); }
+
+  /* The dialog box opens out of the tile's rectangle and retracts back into it.
+     --vt-t/r/b/l (set from JS) are the tile's insets from the dialog box. */
+  @keyframes box-reveal {
+    from { clip-path: inset(var(--vt-t) var(--vt-r) var(--vt-b) var(--vt-l) round var(--r)); }
+    to { clip-path: inset(0 round var(--r)); }
+  }
+
+  @keyframes box-retract {
+    from { clip-path: inset(0 round var(--r)); }
+    to { clip-path: inset(var(--vt-t) var(--vt-r) var(--vt-b) var(--vt-l) round var(--r)); }
+  }
+
+  :root[data-vt="open"]::view-transition-group(project-box) {
+    animation: box-reveal var(--t-open) var(--ease-out) both;
+  }
+
+  :root[data-vt="close"]::view-transition-group(project-box) {
+    animation: box-retract var(--t-close) var(--ease-out) both;
+  }
+
+  /* The cover keeps the box's rounded top corners while it travels (square at the bottom,
+     like the settled cover), instead of being a separate square-cornered image */
+  @keyframes cover-corners-open {
+    from { border-radius: var(--r); }
+    to { border-radius: var(--r) var(--r) 0 0; }
+  }
+
+  @keyframes cover-corners-close {
+    from { border-radius: var(--r) var(--r) 0 0; }
+    to { border-radius: var(--r); }
+  }
+
+  :root[data-vt="open"]::view-transition-group(project-cover) {
+    overflow: clip;
+    animation: -ua-view-transition-group-anim-project-cover var(--t-open) var(--ease-out) both,
+      cover-corners-open var(--t-open) var(--ease-out) both;
+  }
+
+  :root[data-vt="close"]::view-transition-group(project-cover) {
+    overflow: clip;
+    animation: -ua-view-transition-group-anim-project-cover var(--t-close) var(--ease-out) both,
+      cover-corners-close var(--t-close) var(--ease-out) both;
+  }
+
+  /* Keep the cover above the box they sit in */
+  ::view-transition-group(project-box) { z-index: 1; }
+  ::view-transition-group(project-cover) { z-index: 2; }
+  ::view-transition-group(project-close) { z-index: 3; }
 
   ::view-transition-old(project-cover),
   ::view-transition-new(project-cover) {

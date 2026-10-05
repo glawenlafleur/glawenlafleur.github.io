@@ -67,7 +67,7 @@
     inset-inline-start: var(--s-3);
     z-index: 10;
     padding: var(--s-3) var(--s-4);
-    border-radius: var(--r-pill);
+    border-radius: var(--r);
     background: var(--iris);
     color: var(--on-iris);
     font-weight: 600;

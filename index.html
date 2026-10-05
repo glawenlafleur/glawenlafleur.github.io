@@ -39,6 +39,7 @@
   <a class="skip-link" href="#projects">Skip to projects</a>
 
   <div class="page">
+    <div class="sidebar">
     <header class="profile">
       <div class="profile__avatar" aria-hidden="true">GL</div>
 
@@ -57,27 +58,31 @@
         <h2 class="visually-hidden">Contact</h2>
         <ul>
           <!-- TODO: real URLs -->
-          <li><a href="mailto:hello@example.com">Email</a></li>
-          <li><a href="#">LinkedIn</a></li>
-          <li><a href="#">GitHub</a></li>
-          <li><a href="#">Résumé (PDF)</a></li>
+          <li><a class="button" href="mailto:hello@example.com">Email</a></li>
+          <li><a class="button" href="#">LinkedIn</a></li>
+          <li><a class="button" href="#">GitHub</a></li>
+          <li><a class="button" href="#">Résumé (PDF)</a></li>
         </ul>
       </address>
 
-      <fieldset class="theme">
-        <legend>Appearance</legend>
-        <div class="theme__options">
-          <input type="radio" name="theme" id="theme-auto" value="auto" checked>
-          <label for="theme-auto">Auto</label>
-          <input type="radio" name="theme" id="theme-light" value="light">
-          <label for="theme-light">Light</label>
-          <input type="radio" name="theme" id="theme-dark" value="dark">
-          <label for="theme-dark">Dark</label>
-        </div>
-      </fieldset>
     </header>
 
-    <main id="projects" tabindex="-1">
+    <aside class="appearance" aria-label="Site settings">
+        <fieldset class="theme">
+          <legend class="visually-hidden">Appearance</legend>
+          <div class="theme__options">
+            <input type="radio" name="theme" id="theme-auto" value="auto" checked>
+            <label for="theme-auto">Auto</label>
+            <input type="radio" name="theme" id="theme-light" value="light">
+            <label for="theme-light">Light</label>
+            <input type="radio" name="theme" id="theme-dark" value="dark">
+            <label for="theme-dark">Dark</label>
+          </div>
+        </fieldset>
+    </aside>
+    </div>
+
+    <main id="projects" tabindex="0">
       <h2 class="visually-hidden">Projects</h2>
       <!--
         To add a project, copy one <li class="project"> block, then:
@@ -87,6 +92,76 @@
         No JavaScript changes are needed.
       -->
       <ul class="project-grid">
+        <li class="project" id="grassroots-unwired">
+          <a class="tile" href="#grassroots-unwired">
+            <img class="tile__cover" src="assets/projects/grassroots-unwired/cover.png" alt="" width="1200" height="1200" loading="lazy" decoding="async">
+            <div class="tile__caption">
+              <h3 class="tile__title">Grassroots Unwired</h3>
+              <p class="tile__tagline">A mobile-first canvassing experience for the field.</p>
+            </div>
+          </a>
+          <div class="project__details">
+            <p class="project__tagline">Redesigning field data collection for canvassers working in fast-paced, real-world conditions.</p>
+            <dl class="project__meta">
+              <dt>Role</dt><dd>Product design, mobile UX, interaction design</dd>
+              <dt>Platform</dt><dd>Mobile web</dd>
+              <dt>Focus</dt><dd>Navigation, hierarchy, data entry</dd>
+            </dl>
+            <div class="project__body">
+              <h3>Overview</h3>
+              <p>Grassroots Unwired is a platform canvassing teams use to collect data, manage outreach, and track engagement in the field. I redesigned the canvassing experience with a mobile-first approach, so it works for people moving quickly through real-world environments.</p>
+              <h3>The problem</h3>
+              <p>Canvassers move fast and talk to people face to face. The existing interface got in the way, with unclear navigation, dense layouts, and slow data entry. That led to:</p>
+              <ul>
+                <li>Slower interactions during conversations</li>
+                <li>More input errors</li>
+                <li>Difficulty switching between tasks in the moment</li>
+              </ul>
+              <h3>Users and constraints</h3>
+              <p>Canvassers use the app on their phones, mid-conversation. Campaign managers depend on the structured data those canvassers collect, so it has to be accurate. The design had to hold up under a few constraints:</p>
+              <ul>
+                <li>Mobile-first use in changing environments</li>
+                <li>Time-sensitive interactions that demand speed and clarity</li>
+                <li>High-volume data entry during conversations</li>
+                <li>Clear structure across complex workflows</li>
+              </ul>
+              <h3>Design approach</h3>
+              <ul>
+                <li>Streamlined navigation to reduce cognitive load</li>
+                <li>A clearer hierarchy that puts primary actions and information first</li>
+                <li>Quick, one-handed interaction</li>
+                <li>Less friction in data entry and task completion</li>
+              </ul>
+              <h3>Visual system</h3>
+              <p>I defined typography, color usage, and component styles so the interface reads clearly and can scale as the product grows.</p>
+              <figure>
+                <img src="assets/projects/grassroots-unwired/0.png" alt="Style guide showing the typography, color palette, and UI components used in the redesigned canvassing interface" width="1600" height="888" loading="lazy" decoding="async">
+                <figcaption>The style guide: typography, color, and core components.</figcaption>
+              </figure>
+              <h3>Redesigned dashboard</h3>
+              <p>The dashboard now leads with the information and actions people need most, so they can see their tasks and get around the app at a glance. It has a clearer content hierarchy, less visual clutter, more accessible primary actions, and better readability on small screens.</p>
+              <figure>
+                <img src="assets/projects/grassroots-unwired/1.png" alt="Redesigned mobile dashboard with a simplified layout, clearer hierarchy, and prioritized tasks" width="1280" height="761" loading="lazy" decoding="async">
+                <figcaption>The redesigned dashboard.</figcaption>
+              </figure>
+              <h3>Before and after</h3>
+              <p>The original dashboard packed information together, which made key actions hard to spot. The new version simplifies the layout and emphasizes structure, clarity, and ease of use.</p>
+              <figure>
+                <img src="assets/projects/grassroots-unwired/2.png" alt="The original dashboard, with a denser layout and a less clear visual hierarchy than the redesign" width="1280" height="786" loading="lazy" decoding="async">
+                <figcaption>The original dashboard, for comparison.</figcaption>
+              </figure>
+              <h3>Outcome</h3>
+              <ul>
+                <li>Less friction during live conversations</li>
+                <li>Faster navigation and data entry</li>
+                <li>Clearer screens in high-pressure situations</li>
+                <li>A more consistent, scalable interface</li>
+              </ul>
+              <h3>Reflection</h3>
+              <p>This project taught me to design for real-world conditions rather than ideal ones. In time-sensitive mobile contexts, clarity, hierarchy, and interaction efficiency matter most. With another iteration, I would bring in direct user feedback and usability testing to validate and refine these changes.</p>
+            </div>
+          </div>
+        </li>
         <li class="project" id="lorem-ipsum">
           <a class="tile" href="#lorem-ipsum">
             <!-- TODO: replace with the real cover image; alt stays empty because the title names the link -->
@@ -171,6 +246,156 @@
               <figure>
                 <!-- TODO: real figure with descriptive alt text -->
                 <img src="assets/projects/amet-elit/cover.svg" alt="Placeholder illustration of a phone screen" width="800" height="800" loading="lazy" decoding="async">
+                <figcaption>Lorem ipsum dolor sit amet, consectetur adipiscing.</figcaption>
+              </figure>
+              <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+            </div>
+          </div>
+        </li>
+        <li class="project" id="consectetur-adipiscing">
+          <a class="tile" href="#consectetur-adipiscing">
+            <!-- TODO: replace with the real cover image; alt stays empty because the title names the link -->
+            <img class="tile__cover" src="assets/projects/consectetur-adipiscing/cover.svg" alt="" width="800" height="800" loading="lazy" decoding="async">
+            <div class="tile__caption">
+              <h3 class="tile__title">Consectetur Adipiscing</h3>
+              <p class="tile__tagline">Sed do eiusmod tempor incididunt ut labore.</p>
+            </div>
+          </a>
+          <div class="project__details">
+            <p class="project__tagline">Sed do eiusmod tempor incididunt ut labore.</p>
+            <dl class="project__meta">
+              <dt>Role</dt><dd>Lorem ipsum</dd>
+              <dt>Timeline</dt><dd>Dolor sit amet</dd>
+              <dt>Tools</dt><dd>Consectetur, adipiscing, elit</dd>
+            </dl>
+            <div class="project__body">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+              <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+              <h3>Sed ut perspiciatis</h3>
+              <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+              <figure>
+                <!-- TODO: real figure with descriptive alt text -->
+                <img src="assets/projects/consectetur-adipiscing/cover.svg" alt="Placeholder illustration of a phone screen" width="800" height="800" loading="lazy" decoding="async">
+                <figcaption>Lorem ipsum dolor sit amet, consectetur adipiscing.</figcaption>
+              </figure>
+              <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+            </div>
+          </div>
+        </li>
+        <li class="project" id="sed-do-eiusmod">
+          <a class="tile" href="#sed-do-eiusmod">
+            <!-- TODO: replace with the real cover image; alt stays empty because the title names the link -->
+            <img class="tile__cover" src="assets/projects/sed-do-eiusmod/cover.svg" alt="" width="800" height="800" loading="lazy" decoding="async">
+            <div class="tile__caption">
+              <h3 class="tile__title">Sed Do Eiusmod</h3>
+              <p class="tile__tagline">Magna aliqua ut enim ad minim veniam.</p>
+            </div>
+          </a>
+          <div class="project__details">
+            <p class="project__tagline">Magna aliqua ut enim ad minim veniam.</p>
+            <dl class="project__meta">
+              <dt>Role</dt><dd>Lorem ipsum</dd>
+              <dt>Timeline</dt><dd>Dolor sit amet</dd>
+              <dt>Tools</dt><dd>Consectetur, adipiscing, elit</dd>
+            </dl>
+            <div class="project__body">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+              <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+              <h3>Sed ut perspiciatis</h3>
+              <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+              <figure>
+                <!-- TODO: real figure with descriptive alt text -->
+                <img src="assets/projects/sed-do-eiusmod/cover.svg" alt="Placeholder illustration of a phone screen" width="800" height="800" loading="lazy" decoding="async">
+                <figcaption>Lorem ipsum dolor sit amet, consectetur adipiscing.</figcaption>
+              </figure>
+              <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+            </div>
+          </div>
+        </li>
+        <li class="project" id="tempor-incididunt">
+          <a class="tile" href="#tempor-incididunt">
+            <!-- TODO: replace with the real cover image; alt stays empty because the title names the link -->
+            <img class="tile__cover" src="assets/projects/tempor-incididunt/cover.svg" alt="" width="800" height="800" loading="lazy" decoding="async">
+            <div class="tile__caption">
+              <h3 class="tile__title">Tempor Incididunt</h3>
+              <p class="tile__tagline">Quis nostrud exercitation ullamco laboris.</p>
+            </div>
+          </a>
+          <div class="project__details">
+            <p class="project__tagline">Quis nostrud exercitation ullamco laboris.</p>
+            <dl class="project__meta">
+              <dt>Role</dt><dd>Lorem ipsum</dd>
+              <dt>Timeline</dt><dd>Dolor sit amet</dd>
+              <dt>Tools</dt><dd>Consectetur, adipiscing, elit</dd>
+            </dl>
+            <div class="project__body">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+              <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+              <h3>Sed ut perspiciatis</h3>
+              <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+              <figure>
+                <!-- TODO: real figure with descriptive alt text -->
+                <img src="assets/projects/tempor-incididunt/cover.svg" alt="Placeholder illustration of a phone screen" width="800" height="800" loading="lazy" decoding="async">
+                <figcaption>Lorem ipsum dolor sit amet, consectetur adipiscing.</figcaption>
+              </figure>
+              <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+            </div>
+          </div>
+        </li>
+        <li class="project" id="ut-labore">
+          <a class="tile" href="#ut-labore">
+            <!-- TODO: replace with the real cover image; alt stays empty because the title names the link -->
+            <img class="tile__cover" src="assets/projects/ut-labore/cover.svg" alt="" width="800" height="800" loading="lazy" decoding="async">
+            <div class="tile__caption">
+              <h3 class="tile__title">Ut Labore</h3>
+              <p class="tile__tagline">Nisi ut aliquip ex ea commodo consequat.</p>
+            </div>
+          </a>
+          <div class="project__details">
+            <p class="project__tagline">Nisi ut aliquip ex ea commodo consequat.</p>
+            <dl class="project__meta">
+              <dt>Role</dt><dd>Lorem ipsum</dd>
+              <dt>Timeline</dt><dd>Dolor sit amet</dd>
+              <dt>Tools</dt><dd>Consectetur, adipiscing, elit</dd>
+            </dl>
+            <div class="project__body">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+              <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+              <h3>Sed ut perspiciatis</h3>
+              <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+              <figure>
+                <!-- TODO: real figure with descriptive alt text -->
+                <img src="assets/projects/ut-labore/cover.svg" alt="Placeholder illustration of a phone screen" width="800" height="800" loading="lazy" decoding="async">
+                <figcaption>Lorem ipsum dolor sit amet, consectetur adipiscing.</figcaption>
+              </figure>
+              <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+            </div>
+          </div>
+        </li>
+        <li class="project" id="magna-aliqua">
+          <a class="tile" href="#magna-aliqua">
+            <!-- TODO: replace with the real cover image; alt stays empty because the title names the link -->
+            <img class="tile__cover" src="assets/projects/magna-aliqua/cover.svg" alt="" width="800" height="800" loading="lazy" decoding="async">
+            <div class="tile__caption">
+              <h3 class="tile__title">Magna Aliqua</h3>
+              <p class="tile__tagline">Duis aute irure dolor in reprehenderit.</p>
+            </div>
+          </a>
+          <div class="project__details">
+            <p class="project__tagline">Duis aute irure dolor in reprehenderit.</p>
+            <dl class="project__meta">
+              <dt>Role</dt><dd>Lorem ipsum</dd>
+              <dt>Timeline</dt><dd>Dolor sit amet</dd>
+              <dt>Tools</dt><dd>Consectetur, adipiscing, elit</dd>
+            </dl>
+            <div class="project__body">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+              <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+              <h3>Sed ut perspiciatis</h3>
+              <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+              <figure>
+                <!-- TODO: real figure with descriptive alt text -->
+                <img src="assets/projects/magna-aliqua/cover.svg" alt="Placeholder illustration of a phone screen" width="800" height="800" loading="lazy" decoding="async">
                 <figcaption>Lorem ipsum dolor sit amet, consectetur adipiscing.</figcaption>
               </figure>
               <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>

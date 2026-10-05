@@ -91,9 +91,39 @@
     };
   }
 
-  function setNames(cover, title, on) {
+  // Only the cover is shared between tile and dialog; each title is its own element and stays put
+  function setName(cover, on) {
     cover.style.viewTransitionName = on ? "project-cover" : "";
-    title.style.viewTransitionName = on ? "project-title" : "";
+  }
+
+  // The dialog's own box is part of the transition too: it is revealed from (and retracts to)
+  // the tile's rectangle, in step with the cover. The cover is flush with the box's top, left
+  // and right edges, so no white box shows around it mid-flight.
+  var SHADOW_OFF = "0 1.5rem 5rem rgb(0 0 0 / 0)";
+  var SHADOW_ON = "0 1.5rem 5rem rgb(0 0 0 / 0.35)";
+
+  function setBox(on) {
+    dialog.style.viewTransitionName = on ? "project-box" : "";
+    closeButton.style.viewTransitionName = on ? "project-close" : "";
+  }
+
+  // Where the tile sits relative to the dialog box, as inset() values for the CSS keyframes
+  function setTileInsets(tileRect) {
+    var box = dialog.getBoundingClientRect();
+    root.style.setProperty("--vt-t", tileRect.top - box.top + "px");
+    root.style.setProperty("--vt-r", box.right - tileRect.right + "px");
+    root.style.setProperty("--vt-b", box.bottom - tileRect.bottom + "px");
+    root.style.setProperty("--vt-l", tileRect.left - box.left + "px");
+  }
+
+  // The shadow would be clipped during the transition and pop in at the end, so it is
+  // held back while the box moves and then faded in
+  function restoreShadow() {
+    dialog.style.boxShadow = "";
+    dialog.animate([{ boxShadow: SHADOW_OFF }, { boxShadow: SHADOW_ON }], {
+      duration: 250,
+      easing: "ease-out"
+    });
   }
 
   // Moves the project's details into the dialog (moved, not cloned, so ids stay unique)
@@ -131,19 +161,27 @@
       return;
     }
 
-    setNames(parts.cover, parts.title, true);
+    var tileRect = parts.tile.getBoundingClientRect();
+    setName(parts.cover, true);
     var vt = transition("open", function () {
-      setNames(parts.cover, parts.title, false);
+      setName(parts.cover, false);
       fill(item, pushed);
-      setNames(dialogCover, dialogTitle, true);
+      setName(dialogCover, true);
+      dialog.style.boxShadow = "none";
       show();
+      setTileInsets(tileRect);
+      setBox(true);
     });
     if (vt) {
       vt.finished.finally(function () {
-        setNames(dialogCover, dialogTitle, false);
+        setName(dialogCover, false);
+        setBox(false);
+        restoreShadow();
       });
     } else {
-      setNames(parts.cover, parts.title, false);
+      setName(parts.cover, false);
+      setBox(false);
+      dialog.style.boxShadow = "";
     }
   }
 
@@ -152,6 +190,11 @@
     var parts = tileParts(item);
     if (dialog.open) dialog.close();
     empty();
+    // Focus returns to the tile for keyboard continuity, but without the selected look
+    parts.tile.dataset.restored = "";
+    parts.tile.addEventListener("blur", function () {
+      delete parts.tile.dataset.restored;
+    }, { once: true });
     parts.tile.focus({ preventScroll: true });
     return parts;
   }
@@ -172,20 +215,24 @@
       return;
     }
 
-    setNames(dialogCover, dialogTitle, true);
+    setName(dialogCover, true);
+    setTileInsets(parts.tile.getBoundingClientRect());
+    setBox(true);
     var vt = transition("close", function () {
-      setNames(dialogCover, dialogTitle, false);
-      setNames(parts.cover, parts.title, true);
+      setName(dialogCover, false);
+      setBox(false);
+      setName(parts.cover, true);
       teardown();
     });
     if (vt) {
       vt.finished.finally(function () {
-        setNames(parts.cover, parts.title, false);
+        setName(parts.cover, false);
         done();
       });
     } else {
-      setNames(dialogCover, dialogTitle, false);
-      setNames(parts.cover, parts.title, false);
+      setName(dialogCover, false);
+      setBox(false);
+      setName(parts.cover, false);
       done();
     }
   }
