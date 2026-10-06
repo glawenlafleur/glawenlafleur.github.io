@@ -111,6 +111,17 @@
     gap: var(--gap);
   }
 
+  /* Sections: "Projects" and "More Work", each with its own grid */
+  main { display: grid; gap: var(--s-6); align-content: start; }
+  .project-section__title {
+    margin-bottom: var(--s-4);
+    color: var(--graphite);
+    font-size: var(--fs-small);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
   /* Mobile: the appearance control is hidden; the site follows the system */
   @media (max-width: 39.999em) {
     .appearance { display: none; }

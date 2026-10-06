@@ -69,7 +69,7 @@
   var dialogTitle = dialog.querySelector(".dialog__title");
   var dialogSlot = dialog.querySelector(".dialog__slot");
   var closeButton = dialog.querySelector(".dialog__close");
-  var grid = document.querySelector(".project-grid");
+  var grid = document.getElementById("projects");
   var pageTitle = document.title;
 
   // The project currently shown: { item, details, pushed }

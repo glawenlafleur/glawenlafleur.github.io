@@ -90,15 +90,16 @@
     </div>
 
     <main id="projects" tabindex="0">
-      <h2 class="visually-hidden">Projects</h2>
       <!--
         To add a project, copy one <li class="project"> block, then:
         1. Set the slug in id and href (lowercase, hyphenated, unique)
         2. Add assets/projects/<slug>/cover.* (4:3 landscape, about 1200x900)
         3. Fill in the title, tagline, details and article
-        No JavaScript changes are needed.
+        Put it in the "Projects" list or the "More Work" list. No JavaScript changes are needed.
       -->
-      <ul class="project-grid">
+      <section class="project-section" aria-labelledby="projects-heading">
+        <h2 class="visually-hidden" id="projects-heading">Projects</h2>
+        <ul class="project-grid">
         <li class="project" id="grassroots-unwired">
           <a class="tile" href="#grassroots-unwired">
             <img class="tile__cover" src="assets/projects/grassroots-unwired/cover.png" alt="" width="1200" height="1200" loading="lazy" decoding="async">
@@ -169,6 +170,42 @@
             </div>
           </div>
         </li>
+        <li class="project" id="intel-3d-fitting-room">
+          <a class="tile" href="#intel-3d-fitting-room">
+            <img class="tile__cover" src="assets/projects/intel-3d-fitting-room/cover.png" alt="" width="1200" height="960" loading="lazy" decoding="async">
+            <div class="tile__caption">
+              <h3 class="tile__title">Intel 3D Fitting Room</h3>
+              <p class="tile__tagline">Body scanning tech to find your fit.</p>
+            </div>
+          </a>
+          <div class="project__details">
+            <p class="project__tagline">A futuristic interface built to show off FitMatch body scanning on the Intel Innovation 2023 keynote stage.</p>
+            <dl class="project__meta">
+              <dt>Role</dt><dd>UI design, interaction design</dd>
+              <dt>Platform</dt><dd>Kiosk touchscreen</dd>
+              <dt>Event</dt><dd>Intel Innovation 2023</dd>
+            </dl>
+            <div class="project__body">
+              <h3>Overview</h3>
+              <p>I designed this interface to showcase FitMatch body scanning technology at the <a href="https://www.intel.com/content/www/us/en/newsroom/resources/intel-innovation-2023.html" target="_blank" rel="noopener">Intel Innovation 2023 Keynote</a>. During the keynote, CEO Pat Gelsinger did a live demo of the product. It was one of the most exciting projects I've worked on, knowing it would be shown at such a large event and livestreamed to a combined 28K viewers.</p>
+              <h3>See it in action</h3>
+              <p>Pat's walkthrough begins at <a href="https://youtu.be/iuU2YJohuZE?t=4410" target="_blank" rel="noopener">1:13:30</a> in the keynote recording. Below are a few screens from the software. Everything was designed to feel futuristic while staying easy to follow on stage.</p>
+              <figure>
+                <img src="assets/projects/intel-3d-fitting-room/0.png" alt="Two kiosk screens: a welcome screen with a point-cloud human figure and a scan screen showing an A-pose guide with heel markers and a Start Scan button" width="1600" height="1280" loading="lazy" decoding="async">
+                <figcaption>Welcome (left) and Begin Scan (right).</figcaption>
+              </figure>
+              <figure>
+                <img src="assets/projects/intel-3d-fitting-room/1.png" alt="Two kiosk screens: a results screen with recommended tops and shirts, and a dashboard with a body avatar and Brooks product matches" width="1600" height="1280" loading="lazy" decoding="async">
+                <figcaption>Found your fit (left) and Dashboard (right).</figcaption>
+              </figure>
+            </div>
+          </div>
+        </li>
+        </ul>
+      </section>
+      <section class="project-section" aria-labelledby="more-work-heading">
+        <h2 class="project-section__title" id="more-work-heading">More Work</h2>
+        <ul class="project-grid">
         <li class="project" id="minecraft-baldurs-gate">
           <a class="tile" href="#minecraft-baldurs-gate">
             <img class="tile__cover" src="assets/projects/minecraft-baldurs-gate/cover.png" alt="" width="1200" height="606" loading="lazy" decoding="async">
@@ -279,37 +316,6 @@
             </div>
           </div>
         </li>
-        <li class="project" id="intel-3d-fitting-room">
-          <a class="tile" href="#intel-3d-fitting-room">
-            <img class="tile__cover" src="assets/projects/intel-3d-fitting-room/cover.png" alt="" width="1200" height="960" loading="lazy" decoding="async">
-            <div class="tile__caption">
-              <h3 class="tile__title">Intel 3D Fitting Room</h3>
-              <p class="tile__tagline">Body scanning tech to find your fit.</p>
-            </div>
-          </a>
-          <div class="project__details">
-            <p class="project__tagline">A futuristic interface built to show off FitMatch body scanning on the Intel Innovation 2023 keynote stage.</p>
-            <dl class="project__meta">
-              <dt>Role</dt><dd>UI design, interaction design</dd>
-              <dt>Platform</dt><dd>Kiosk touchscreen</dd>
-              <dt>Event</dt><dd>Intel Innovation 2023</dd>
-            </dl>
-            <div class="project__body">
-              <h3>Overview</h3>
-              <p>I designed this interface to showcase FitMatch body scanning technology at the <a href="https://www.intel.com/content/www/us/en/newsroom/resources/intel-innovation-2023.html" target="_blank" rel="noopener">Intel Innovation 2023 Keynote</a>. During the keynote, CEO Pat Gelsinger did a live demo of the product. It was one of the most exciting projects I've worked on, knowing it would be shown at such a large event and livestreamed to a combined 28K viewers.</p>
-              <h3>See it in action</h3>
-              <p>Pat's walkthrough begins at <a href="https://youtu.be/iuU2YJohuZE?t=4410" target="_blank" rel="noopener">1:13:30</a> in the keynote recording. Below are a few screens from the software. Everything was designed to feel futuristic while staying easy to follow on stage.</p>
-              <figure>
-                <img src="assets/projects/intel-3d-fitting-room/0.png" alt="Two kiosk screens: a welcome screen with a point-cloud human figure and a scan screen showing an A-pose guide with heel markers and a Start Scan button" width="1600" height="1280" loading="lazy" decoding="async">
-                <figcaption>Welcome (left) and Begin Scan (right).</figcaption>
-              </figure>
-              <figure>
-                <img src="assets/projects/intel-3d-fitting-room/1.png" alt="Two kiosk screens: a results screen with recommended tops and shirts, and a dashboard with a body avatar and Brooks product matches" width="1600" height="1280" loading="lazy" decoding="async">
-                <figcaption>Found your fit (left) and Dashboard (right).</figcaption>
-              </figure>
-            </div>
-          </div>
-        </li>
         <li class="project" id="lunar-drift">
           <a class="tile" href="#lunar-drift">
             <img class="tile__cover" src="assets/projects/lunar-drift/cover.png" alt="" width="1200" height="960" loading="lazy" decoding="async">
@@ -394,7 +400,8 @@
             </div>
           </div>
         </li>
-      </ul>
+        </ul>
+      </section>
     </main>
   </div>
 
