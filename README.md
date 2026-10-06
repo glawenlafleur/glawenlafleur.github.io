@@ -15,7 +15,7 @@ Then open http://localhost:8000.
 
 1. In `index.html`, copy one `<li class="project">` block inside `.project-grid`.
 2. Set the slug in the `id` and the tile's `href` (lowercase, hyphenated, unique).
-3. Add `assets/projects/<slug>/cover.*` (square, about 800x800) and update the `src`.
+3. Add `assets/projects/<slug>/cover.*` (4:3 landscape, about 1200x900) and update the `src`.
 4. Fill in the title, tagline, meta list and article.
 
 No JavaScript changes are needed. Project details are moved into the modal
@@ -24,7 +24,7 @@ from the page, so write the article directly in `index.html`.
 ## Replace the placeholders
 
 Search `index.html` for `TODO`: contact URLs, cover images, figure alt text,
-and the Open Graph image and URL. The bio and project text are lorem ipsum.
+and the Open Graph image and URL.
 
 ## Structure
 

@@ -77,7 +77,7 @@
   .tile {
     position: relative;
     display: block;
-    aspect-ratio: 1;
+    aspect-ratio: 4 / 3;
     overflow: hidden;
     isolation: isolate;
     border-radius: var(--r);
@@ -114,6 +114,7 @@
     display: grid;
     gap: var(--s-1);
     padding: var(--s-3) var(--s-5);
+    border: 1px solid var(--hairline);
     border-radius: var(--r-inner);
     background: color-mix(in srgb, var(--surface) 88%, transparent);
     -webkit-backdrop-filter: blur(20px);
@@ -257,12 +258,10 @@
 
   .project__details { display: grid; gap: var(--s-5); }
 
-  /* Justified body text; narrow phones keep a ragged edge, where justification leaves wide gaps */
-  @media (min-width: 40em) {
-    .project__body p {
-      text-align: justify;
-      hyphens: auto;
-    }
+  /* Justified body text. Hyphenation keeps word gaps tight on narrow screens. */
+  .project__body p {
+    text-align: justify;
+    hyphens: auto;
   }
 
   .project__tagline {
