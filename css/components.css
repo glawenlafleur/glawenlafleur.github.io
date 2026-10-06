@@ -18,6 +18,19 @@
 
   .button:hover { background: var(--fill-hover); }
 
+  .profile__contact .button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-2);
+  }
+
+  .button__icon {
+    flex: none;
+    width: 1.125em;
+    height: 1.125em;
+  }
+
     /* Collapsed state reads as a plain link; expanded keeps the .button look */
   .profile__more[aria-expanded="false"] {
     display: block;
