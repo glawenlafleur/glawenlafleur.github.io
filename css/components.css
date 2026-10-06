@@ -123,6 +123,16 @@
     transition: outline-color var(--t-hover) var(--ease-out);
   }
 
+  /* The whole tile reads as one button: pointer everywhere, no text selection or image dragging */
+  .tile,
+  .tile * {
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .tile__cover { -webkit-user-drag: none; }
+
   /* Hairline drawn over the cover so it never shifts the layout or the open/close transition.
      The hover accent is the tile's outline: 4px thick, 4px clear of the tile. */
   .tile::after {
