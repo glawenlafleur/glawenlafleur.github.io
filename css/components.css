@@ -142,20 +142,19 @@
 
   .tile__caption {
     position: absolute;
-    inset-inline: var(--inset);
-    inset-block-end: var(--inset);
+    inset-inline: 0;
+    inset-block-end: 0;
     display: grid;
     gap: var(--s-1);
-    padding: var(--s-3) var(--s-5);
-    border: 1px solid var(--hairline);
-    border-radius: var(--r-inner);
-    background: color-mix(in srgb, var(--surface) 88%, transparent);
-    -webkit-backdrop-filter: blur(20px);
-    backdrop-filter: blur(20px);
-    opacity: 0;
-    translate: 0 0.75rem;
-    transition: opacity var(--t-hover) var(--ease-out),
-      translate var(--t-hover) var(--ease-out);
+    padding: var(--s-3) 2rem var(--s-4);
+    border: 0;
+    border-block-start: 1px solid var(--hairline);
+    border-radius: 0;
+    background: color-mix(in srgb, var(--surface) 75%, transparent);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    translate: 0 100%;
+    transition: translate 380ms var(--ease-out);
   }
 
   .tile__title {
@@ -174,7 +173,6 @@
   .tile:focus-visible { outline-color: var(--iris); }
 
   .tile:focus-visible .tile__caption {
-    opacity: 1;
     translate: 0 0;
   }
 
@@ -184,15 +182,13 @@
   .tile[data-restored]:focus-visible:not(:hover) { outline-color: transparent; }
   .tile[data-restored]:focus-visible:not(:hover) .tile__cover { scale: 1; }
   .tile[data-restored]:focus-visible:not(:hover) .tile__caption {
-    opacity: 0;
-    translate: 0 0.75rem;
+    translate: 0 100%;
   }
 
-  @media (hover: hover) {
+  @media (hover: hover) and (min-width: 40em) {
     .tile:hover { outline-color: var(--iris); }
     .tile:hover .tile__cover { scale: 1.04; }
     .tile:hover .tile__caption {
-      opacity: 1;
       translate: 0 0;
     }
   }
@@ -200,7 +196,6 @@
   @media (hover: none) {
     .tile__caption,
     .tile[data-restored]:focus-visible:not(:hover) .tile__caption {
-      opacity: 1;
       translate: 0 0;
     }
   }
@@ -370,10 +365,7 @@
     }
 
     /* Captions are always visible on small screens, whatever the pointer */
-    .tile__caption {
-      opacity: 1;
-      translate: 0 0;
-    }
+    .tile__caption { translate: 0 0; }
 
     :root:not([data-vt]) .project-dialog {
       scale: 1;
@@ -388,7 +380,15 @@
 
   }
 
-  /* View Transitions (tile <-> dialog morph, theme crossfade) */
+  /* View Transitions (tile <-> dialog morph, theme crossfade).
+     --dialog-r is the settled dialog's corner radius: the morph runs between the tile's
+     rounded corners and this, so it squares off smoothly where the dialog is full screen. */
+  :root { --dialog-r: var(--r); }
+
+  @media (max-width: 39.999em) {
+    :root { --dialog-r: 0px; }
+  }
+
   ::view-transition-group(root) {
     animation-duration: var(--t-theme);
     animation-timing-function: var(--ease-out);
@@ -406,11 +406,11 @@
      --vt-t/r/b/l (set from JS) are the tile's insets from the dialog box. */
   @keyframes box-reveal {
     from { clip-path: inset(var(--vt-t) var(--vt-r) var(--vt-b) var(--vt-l) round var(--r)); }
-    to { clip-path: inset(0 round var(--r)); }
+    to { clip-path: inset(0 round var(--dialog-r)); }
   }
 
   @keyframes box-retract {
-    from { clip-path: inset(0 round var(--r)); }
+    from { clip-path: inset(0 round var(--dialog-r)); }
     to { clip-path: inset(var(--vt-t) var(--vt-r) var(--vt-b) var(--vt-l) round var(--r)); }
   }
 
@@ -426,11 +426,11 @@
      like the settled cover), instead of being a separate square-cornered image */
   @keyframes cover-corners-open {
     from { border-radius: var(--r); }
-    to { border-radius: var(--r) var(--r) 0 0; }
+    to { border-radius: var(--dialog-r) var(--dialog-r) 0 0; }
   }
 
   @keyframes cover-corners-close {
-    from { border-radius: var(--r) var(--r) 0 0; }
+    from { border-radius: var(--dialog-r) var(--dialog-r) 0 0; }
     to { border-radius: var(--r); }
   }
 

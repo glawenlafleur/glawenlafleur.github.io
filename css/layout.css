@@ -120,6 +120,7 @@
     .profile { border-radius: 0; }
 
     /* Page and profile share the panel color (white in light, charcoal in dark) */
+    html,
     body,
     .profile { background: var(--surface); }
 

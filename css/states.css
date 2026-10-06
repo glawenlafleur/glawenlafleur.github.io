@@ -4,7 +4,7 @@
     .tile:hover .tile__cover,
     .tile:focus-visible .tile__cover { scale: 1; transition: none; }
 
-    .tile__caption { translate: 0 0; transition: opacity 120ms linear; }
+    .tile__caption { transition: none; }
 
     :root:not([data-vt]) .project-dialog,
     :root:not([data-vt]) .project-dialog::backdrop {
@@ -49,8 +49,6 @@
     }
 
     .tile__caption {
-      opacity: 1;
-      translate: 0 0;
       background: var(--surface);
       -webkit-backdrop-filter: none;
       backdrop-filter: none;
@@ -72,8 +70,6 @@
     .button { border: 1px solid CanvasText; }
 
     .tile__caption {
-      opacity: 1;
-      translate: 0 0;
       background: Canvas;
       -webkit-backdrop-filter: none;
       backdrop-filter: none;
