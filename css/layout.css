@@ -134,11 +134,36 @@
       hyphens: auto;
     }
 
-    /* Contact buttons stack full width with larger tap targets */
-    .profile__contact ul { grid-template-columns: 1fr; }
+    /* Contact buttons share one row: email, LinkedIn and GitHub are icon-only circles,
+       the résumé button fills the rest */
+    .profile__contact ul {
+      display: flex;
+      grid-template-columns: none;
+    }
+    /* Contact row sits between the name/title and the bio */
+    .profile__contact { order: 1; margin-top: 0; }
+    .profile__bio { order: 2; }
+    .profile__more { order: 3; }
+    .profile__contact li:last-child { flex: 1; min-width: 0; }
     .profile__contact .button {
-      min-height: 3.5rem;
+      height: 4rem;
+      min-height: 4rem;
       font-size: var(--fs-body);
+    }
+    .profile__contact li:not(:last-child) { flex: none; }
+    .profile__contact li:not(:last-child) .button {
+      width: 4rem;
+      padding: 0;
+      border-radius: 50%;
+    }
+    .profile__contact li:not(:last-child) .button__label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
     }
   }
 
