@@ -56,7 +56,7 @@
 
     .profile,
     .appearance,
-    .project-dialog { border: 1px solid var(--hairline); }
+    .dialog__box { border: 1px solid var(--hairline); }
 
     .button { outline: 1px solid var(--hairline); outline-offset: -1px; }
   }
@@ -65,7 +65,7 @@
     .profile,
     .appearance,
     .tile,
-    .project-dialog { border: 1px solid CanvasText; }
+    .dialog__box { border: 1px solid CanvasText; }
 
     .button { border: 1px solid CanvasText; }
 

@@ -105,7 +105,7 @@
   }
 
   /* Project tile */
-  .project { min-width: 0; }
+  .project { position: relative; min-width: 0; }
 
   .tile {
     position: relative;
@@ -113,7 +113,8 @@
     aspect-ratio: 4 / 3;
     overflow: hidden;
     isolation: isolate;
-    border-radius: var(--r);
+    --sq-r: var(--r);
+    border-radius: var(--sq-r);
     background: var(--surface);
     color: var(--ink);
     text-decoration: none;
@@ -201,19 +202,27 @@
   }
 
   /* Project dialog */
+  /* The dialog is only a frame (position, size, shadow). The clipped, scrolling surface
+     is .dialog__box, so the smoothed corners can clip it while the shadow follows them. */
   .project-dialog {
     width: min(64rem, calc(100% - 2 * var(--gap)));
     max-width: none;
-    max-height: calc(100dvh - 2 * var(--gap));
     margin: auto;
     padding: 0;
     border: 0;
-    border-radius: var(--r);
-    background: var(--surface);
+    background: transparent;
     color: var(--ink);
+    overflow: visible;
+    filter: drop-shadow(0 1.5rem 2.5rem rgb(0 0 0 / 0.35));
+  }
+
+  .dialog__box {
+    max-height: calc(100dvh - 2 * var(--gap));
+    --sq-r: var(--dialog-r);
+    border-radius: var(--sq-r);
+    background: var(--surface);
     overflow-y: auto;
     overscroll-behavior: contain;
-    box-shadow: 0 1.5rem 5rem rgb(0 0 0 / 0.35);
   }
 
   .project-dialog::backdrop {
@@ -359,10 +368,10 @@
     .project-dialog {
       width: 100%;
       height: 100dvh;
-      max-height: none;
       margin: 0;
-      border-radius: 0;
     }
+
+    .dialog__box { height: 100%; max-height: none; }
 
     /* Captions are always visible on small screens, whatever the pointer */
     .tile__caption { translate: 0 0; }
@@ -405,13 +414,13 @@
   /* The dialog box opens out of the tile's rectangle and retracts back into it.
      --vt-t/r/b/l (set from JS) are the tile's insets from the dialog box. */
   @keyframes box-reveal {
-    from { clip-path: inset(var(--vt-t) var(--vt-r) var(--vt-b) var(--vt-l) round var(--r)); }
-    to { clip-path: inset(0 round var(--dialog-r)); }
+    from { clip-path: var(--vt-from); }
+    to { clip-path: var(--vt-to); }
   }
 
   @keyframes box-retract {
-    from { clip-path: inset(0 round var(--dialog-r)); }
-    to { clip-path: inset(var(--vt-t) var(--vt-r) var(--vt-b) var(--vt-l) round var(--r)); }
+    from { clip-path: var(--vt-to); }
+    to { clip-path: var(--vt-from); }
   }
 
   :root[data-vt="open"]::view-transition-group(project-box) {
@@ -423,15 +432,17 @@
   }
 
   /* The cover keeps the box's rounded top corners while it travels (square at the bottom,
-     like the settled cover), instead of being a separate square-cornered image */
+     like the settled cover). Its size is animated by the browser, so it uses plain circular
+     corners: --vt-cr-tile / --vt-cr-dialog (set from JS) are circular radii that match the
+     smoothed corners at their diagonal, so the cover and the clipped box line up. */
   @keyframes cover-corners-open {
-    from { border-radius: var(--r); }
-    to { border-radius: var(--dialog-r) var(--dialog-r) 0 0; }
+    from { border-radius: var(--vt-cr-tile); }
+    to { border-radius: var(--vt-cr-dialog) var(--vt-cr-dialog) 0 0; }
   }
 
   @keyframes cover-corners-close {
-    from { border-radius: var(--dialog-r) var(--dialog-r) 0 0; }
-    to { border-radius: var(--r); }
+    from { border-radius: var(--vt-cr-dialog) var(--vt-cr-dialog) 0 0; }
+    to { border-radius: var(--vt-cr-tile); }
   }
 
   :root[data-vt="open"]::view-transition-group(project-cover) {
@@ -456,5 +467,39 @@
     height: 100%;
     object-fit: cover;
     overflow: clip;
+  }
+
+  /* Smoothed corners (main.js sets data-sq plus the clip paths once it has measured the element).
+     Without it the plain border-radius above stays in use. A clip also clips outlines, so the
+     tile's hover ring and hairline are drawn as shaped overlays instead. */
+  [data-sq] {
+    border-radius: 0;
+    clip-path: var(--sq-clip);
+  }
+
+  .tile[data-sq] { outline: none; }
+
+  .tile[data-sq]::after {
+    border: 0;
+    background: var(--hairline);
+    clip-path: var(--sq-hair);
+  }
+
+  .project:has(> .tile[data-sq])::before {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    background: var(--iris);
+    clip-path: var(--sq-ring);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--t-hover) var(--ease-out);
+  }
+
+  .project:has(> .tile[data-sq]:focus-visible)::before { opacity: 1; }
+  .project:has(> .tile[data-sq][data-restored]:focus-visible:not(:hover))::before { opacity: 0; }
+
+  @media (hover: hover) and (min-width: 40em) {
+    .project:has(> .tile[data-sq]:hover)::before { opacity: 1; }
   }
 }

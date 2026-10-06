@@ -21,7 +21,8 @@
     gap: var(--s-4);
     min-height: 0;
     padding: var(--s-5);
-    border-radius: var(--r);
+    --sq-r: var(--r);
+    border-radius: var(--sq-r);
     background: var(--surface);
   }
 
@@ -139,7 +140,7 @@
 
     /* The profile panel runs edge to edge (top, left and right) */
     .sidebar { margin: calc(-1 * var(--gap)) calc(-1 * var(--gap)) 0; }
-    .profile { border-radius: 0; }
+    .profile { --sq-r: 0px; }
 
     /* Page and profile share the panel color (white in light, charcoal in dark) */
     html,

@@ -23,6 +23,142 @@
     return vt;
   }
 
+
+  /* Smoothed corners
+     CSS border-radius is a plain circular arc. Figma-style "corner smoothing" (the iOS look)
+     eases into the corner over a longer stretch of the edge. There is no cross-browser CSS for
+     that, so the shape is drawn as a clip-path: path() computed from the element's size.
+     The path keeps the same command structure at every size, so it can be animated. */
+
+  var SMOOTHING = 0.6;
+
+  var smoothing =
+    window.CSS &&
+    CSS.supports &&
+    CSS.supports("clip-path", 'path("M0 0L1 0L1 1Z")') &&
+    !window.matchMedia("(forced-colors: active), (prefers-contrast: more)").matches;
+
+  // Corner geometry from figma-squircle: the curve starts p from the corner (p = (1 + smoothing) * r),
+  // runs through two bezier sections (a, b, c, d) around a shortened circular arc of length L.
+  function cornerGeometry(w, h, r) {
+    var s = SMOOTHING;
+    var maxR = Math.min(w, h) / 2;
+    r = Math.max(0, Math.min(r, maxR));
+    if (r === 0) return { r: 0, s: 0, p: 0, a: 0, b: 0, c: 0, d: 0, L: 0 };
+    var p = (1 + s) * r;
+    s = Math.min(s, maxR / r - 1);
+    p = Math.min(p, maxR);
+    var rad = Math.PI / 180;
+    var arc = 90 * (1 - s);
+    var L = Math.sin((arc * rad) / 2) * r * Math.SQRT2;
+    var alpha = (90 - arc) / 2;
+    var p3 = r * Math.tan((alpha * rad) / 2);
+    var beta = 45 * s;
+    var c = p3 * Math.cos(beta * rad);
+    var d = c * Math.tan(beta * rad);
+    var b = (p - L - c - d) / 3;
+    return { r: r, s: s, p: p, a: 2 * b, b: b, c: c, d: d, L: L };
+  }
+
+  function num(n) {
+    return String(Math.round(n * 100) / 100);
+  }
+
+  // SVG path for a rectangle with smoothed corners, drawn clockwise from the top-left
+  function smoothPath(x, y, w, h, r) {
+    var k = cornerGeometry(w, h, r);
+    // corner x, y, then the direction of travel into the corner (t) and out of it (n)
+    var corners = [
+      [x, y, 0, -1, 1, 0],
+      [x + w, y, 1, 0, 0, 1],
+      [x + w, y + h, 0, 1, -1, 0],
+      [x, y + h, -1, 0, 0, -1]
+    ];
+    var d = "M " + num(x + k.p) + " " + num(y) + " ";
+    for (var i = 1; i <= 4; i++) {
+      var q = corners[i % 4];
+      var cx = q[0], cy = q[1], tx = q[2], ty = q[3], nx = q[4], ny = q[5];
+      var at = function (u, v) {
+        return num(cx + (u - k.p) * tx + v * nx) + " " + num(cy + (u - k.p) * ty + v * ny);
+      };
+      var ab = k.a + k.b;
+      var abc = ab + k.c;
+      d += "L " + at(0, 0) +
+        " C " + at(k.a, 0) + " " + at(ab, 0) + " " + at(abc, k.d) +
+        " A " + num(k.r) + " " + num(k.r) + " 0 0 1 " + at(abc + k.L, k.d + k.L) +
+        " C " + at(k.p, k.p - ab) + " " + at(k.p, k.p - k.a) + " " + at(k.p, k.p) + " ";
+    }
+    return d + "Z";
+  }
+
+  // A circular radius whose corner passes through the same diagonal point as the smoothed one
+  function matchingRadius(w, h, r) {
+    var k = cornerGeometry(w, h, r);
+    if (k.r === 0) return 0;
+    var sag = k.r * (1 - Math.cos((90 * (1 - k.s) * Math.PI) / 360));
+    var mx = k.a + k.b + k.c + k.L / 2;
+    var my = k.d + k.L / 2;
+    return (Math.hypot(k.p - mx, my) - sag) / (Math.SQRT2 - 1);
+  }
+
+  // The element's corner radius in px, from its --sq-r custom property (e.g. "3rem" or "0px")
+  function cornerRadius(style) {
+    var raw = style.getPropertyValue("--sq-r").trim();
+    var value = parseFloat(raw);
+    if (!value) return 0;
+    if (/rem$/.test(raw)) return value * parseFloat(getComputedStyle(root).fontSize);
+    return value;
+  }
+
+  function pathValue(d) {
+    return 'path("' + d + '")';
+  }
+
+  var smooth = [];
+
+  // Measures the element and (re)writes its clip paths. Sets data-sq so the CSS swaps
+  // border-radius for the clip; elements with no radius or no size keep plain CSS.
+  function applySmoothing(el) {
+    var style = getComputedStyle(el);
+    var w = parseFloat(style.width);
+    var h = parseFloat(style.height);
+    var r = cornerRadius(style);
+    if (!(w > 1 && h > 1 && r > 0)) {
+      el.removeAttribute("data-sq");
+      return;
+    }
+    el.style.setProperty("--sq-clip", pathValue(smoothPath(0, 0, w, h, r)));
+    if (el.classList.contains("tile")) {
+      // Hairline: the ring between the outer shape and the same shape inset by 1px
+      el.style.setProperty(
+        "--sq-hair",
+        'path(evenodd, "' + smoothPath(0, 0, w, h, r) + " " + smoothPath(1, 1, w - 2, h - 2, r - 1) + '")'
+      );
+      // Hover ring: 4px thick, 4px clear of the tile (the pseudo-element is the tile + 8px each side)
+      el.parentNode.style.setProperty(
+        "--sq-ring",
+        'path(evenodd, "' + smoothPath(0, 0, w + 16, h + 16, r + 8) + " " +
+          smoothPath(4, 4, w + 8, h + 8, r + 4) + '")'
+      );
+    }
+    el.setAttribute("data-sq", "");
+  }
+
+  if (smoothing) {
+    var observer = "ResizeObserver" in window
+      ? new ResizeObserver(function (entries) {
+          entries.forEach(function (entry) {
+            applySmoothing(entry.target);
+          });
+        })
+      : null;
+    document.querySelectorAll(".tile, .profile, .dialog__box").forEach(function (el) {
+      smooth.push(el);
+      applySmoothing(el);
+      if (observer) observer.observe(el);
+    });
+  }
+
   /* Theme: Auto follows the system; Light/Dark are saved overrides */
 
   var THEME_KEY = "theme";
@@ -65,6 +201,7 @@
   /* Project dialog */
 
   var dialog = document.getElementById("project-dialog");
+  var dialogBox = dialog.querySelector(".dialog__box");
   var dialogCover = dialog.querySelector(".dialog__cover");
   var dialogTitle = dialog.querySelector(".dialog__title");
   var dialogSlot = dialog.querySelector(".dialog__slot");
@@ -99,28 +236,44 @@
   // The dialog's own box is part of the transition too: it is revealed from (and retracts to)
   // the tile's rectangle, in step with the cover. The cover is flush with the box's top, left
   // and right edges, so no white box shows around it mid-flight.
-  var SHADOW_OFF = "0 1.5rem 5rem rgb(0 0 0 / 0)";
-  var SHADOW_ON = "0 1.5rem 5rem rgb(0 0 0 / 0.35)";
+  var SHADOW_OFF = "drop-shadow(0 1.5rem 2.5rem rgb(0 0 0 / 0))";
+  var SHADOW_ON = "drop-shadow(0 1.5rem 2.5rem rgb(0 0 0 / 0.35))";
 
   function setBox(on) {
     dialog.style.viewTransitionName = on ? "project-box" : "";
     closeButton.style.viewTransitionName = on ? "project-close" : "";
   }
 
-  // Where the tile sits relative to the dialog box, as inset() values for the CSS keyframes
-  function setTileInsets(tileRect) {
+  // Where the tile sits relative to the dialog box: the clip paths the box opens from and
+  // settles on, and the circular corner radii for the cover that travels between them
+  function setTileInsets(tile, tileRect) {
     var box = dialog.getBoundingClientRect();
-    root.style.setProperty("--vt-t", tileRect.top - box.top + "px");
-    root.style.setProperty("--vt-r", box.right - tileRect.right + "px");
-    root.style.setProperty("--vt-b", box.bottom - tileRect.bottom + "px");
-    root.style.setProperty("--vt-l", tileRect.left - box.left + "px");
+    var tileR = cornerRadius(getComputedStyle(tile));
+    var boxR = cornerRadius(getComputedStyle(dialogBox));
+    var x = tileRect.left - box.left;
+    var y = tileRect.top - box.top;
+    var w = tileRect.width;
+    var h = tileRect.height;
+    var from, to;
+    if (smoothing) {
+      from = pathValue(smoothPath(x, y, w, h, tileR));
+      to = pathValue(smoothPath(0, 0, box.width, box.height, boxR));
+    } else {
+      from = "inset(" + y + "px " + (box.right - tileRect.right) + "px " + (box.bottom - tileRect.bottom) +
+        "px " + x + "px round " + tileR + "px)";
+      to = "inset(0 round " + boxR + "px)";
+    }
+    root.style.setProperty("--vt-from", from);
+    root.style.setProperty("--vt-to", to);
+    root.style.setProperty("--vt-cr-tile", (smoothing ? matchingRadius(w, h, tileR) : tileR) + "px");
+    root.style.setProperty("--vt-cr-dialog", (smoothing ? matchingRadius(box.width, box.height, boxR) : boxR) + "px");
   }
 
   // The shadow would be clipped during the transition and pop in at the end, so it is
   // held back while the box moves and then faded in
   function restoreShadow() {
-    dialog.style.boxShadow = "";
-    dialog.animate([{ boxShadow: SHADOW_OFF }, { boxShadow: SHADOW_ON }], {
+    dialog.style.filter = "";
+    dialog.animate([{ filter: SHADOW_OFF }, { filter: SHADOW_ON }], {
       duration: 250,
       easing: "ease-out"
     });
@@ -146,7 +299,8 @@
 
   function show() {
     dialog.showModal();
-    dialog.scrollTop = 0;
+    dialogBox.scrollTop = 0;
+    if (smoothing) applySmoothing(dialogBox);
     dialogTitle.focus({ preventScroll: true });
   }
 
@@ -167,9 +321,9 @@
       setName(parts.cover, false);
       fill(item, pushed);
       setName(dialogCover, true);
-      dialog.style.boxShadow = "none";
+      dialog.style.filter = "none";
       show();
-      setTileInsets(tileRect);
+      setTileInsets(parts.tile, tileRect);
       setBox(true);
     });
     if (vt) {
@@ -181,7 +335,7 @@
     } else {
       setName(parts.cover, false);
       setBox(false);
-      dialog.style.boxShadow = "";
+      dialog.style.filter = "";
     }
   }
 
@@ -216,7 +370,7 @@
     }
 
     setName(dialogCover, true);
-    setTileInsets(parts.tile.getBoundingClientRect());
+    setTileInsets(parts.tile, parts.tile.getBoundingClientRect());
     setBox(true);
     var vt = transition("close", function () {
       setName(dialogCover, false);
