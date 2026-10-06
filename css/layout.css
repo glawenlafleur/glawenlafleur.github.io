@@ -126,6 +126,17 @@
   @media (max-width: 39.999em) {
     .appearance { display: none; }
 
+    /* The "More Work" label is hidden on mobile (kept for screen readers) */
+    .project-section__title {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
     /* The profile panel runs edge to edge (top, left and right) */
     .sidebar { margin: calc(-1 * var(--gap)) calc(-1 * var(--gap)) 0; }
     .profile { border-radius: 0; }
@@ -209,7 +220,12 @@
     }
   }
 
-  @media (min-width: 80em) { .page { --cols: 4; } }
+  /* Wide desktop: the featured section shows 3 larger tiles across, More Work shows 4 */
+  @media (min-width: 80em) {
+    .page { --cols: 4; }
+    .project-section:first-of-type .project-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .project-section:last-of-type .project-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
   @media (min-width: 100em) { .page { --cols: 5; } }
 
   /* Desktop with room: the page itself never scrolls. Only the project list does. */
