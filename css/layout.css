@@ -121,6 +121,10 @@
   @media (max-width: 39.999em) {
     .appearance { display: none; }
 
+    /* The profile panel runs edge to edge (top, left and right) */
+    .sidebar { margin: calc(-1 * var(--gap)) calc(-1 * var(--gap)) 0; }
+    .profile { border-radius: 0; }
+
     /* Contact buttons stack full width with larger tap targets */
     .profile__contact ul { grid-template-columns: 1fr; }
     .profile__contact .button {
