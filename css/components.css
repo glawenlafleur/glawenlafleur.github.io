@@ -18,6 +18,26 @@
 
   .button:hover { background: var(--fill-hover); }
 
+    /* Collapsed state reads as a plain link; expanded keeps the .button look */
+  .profile__more[aria-expanded="false"] {
+    display: block;
+    flex-shrink: 0;
+    align-self: start;
+    min-width: 0;
+    min-height: 0;
+    padding: 0 0 var(--s-6);
+    background: none;
+    color: var(--iris);
+    font-size: inherit;
+    font-weight: inherit;
+    text-align: start;
+    text-decoration: underline;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.2em;
+  }
+
+  .profile__more[hidden] { display: none; }
+
   /* Appearance: a floating pill under the profile panel. Same padding as the
      profile panel, so the slider lines up with the contact buttons above. */
   .appearance {

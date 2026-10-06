@@ -293,6 +293,33 @@
     }
   });
 
+  /* Profile bio: clipped text offers "Read more", which swaps the contact buttons for the full text */
+
+  var profile = document.querySelector(".profile");
+  var bio = document.getElementById("profile-bio");
+  var more = profile.querySelector(".profile__more");
+
+  function syncBio() {
+    var expanded = profile.hasAttribute("data-expanded");
+    var clipped = !expanded && bio.scrollHeight > bio.clientHeight + 1;
+    bio.toggleAttribute("data-clipped", clipped);
+    more.hidden = !(expanded || clipped);
+  }
+
+  more.addEventListener("click", function () {
+    var expanded = profile.toggleAttribute("data-expanded");
+    more.setAttribute("aria-expanded", String(expanded));
+    more.textContent = expanded ? "Show Links" : "Read more";
+    syncBio();
+    if (!expanded) bio.scrollTop = 0;
+  });
+
+  if ("ResizeObserver" in window) {
+    new ResizeObserver(syncBio).observe(profile);
+  }
+  window.addEventListener("resize", syncBio);
+  syncBio();
+
   // Direct link, e.g. index.html#dolor-sit
   var initial = findProject(location.hash.slice(1));
   if (initial) openProject(initial, { animate: false, pushed: false });

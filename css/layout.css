@@ -69,6 +69,41 @@
 
   .profile__contact { margin-top: auto; }
 
+  /* Bio clips instead of pushing the contact buttons out. The toggle appears
+     only when text is actually clipped (see main.js). */
+  .profile__bio {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* One control, two looks: a text link to expand, a pill button to go back */
+  .profile__more {
+    align-self: center;
+    min-width: 50%;
+    border: 0;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  .profile:not([data-expanded]) .profile__bio[data-clipped] {
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 2.5rem), transparent);
+  }
+
+  .profile[data-expanded] .profile__bio {
+    flex: 1 1 auto;
+    align-content: start;
+    overflow-y: auto;
+  }
+
+  .profile[data-expanded] .profile__contact { display: none; }
+
+  /* Expanded bio also takes over the theme control's space */
+  .sidebar:has(.profile[data-expanded]) {
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .sidebar:has(.profile[data-expanded]) .appearance { display: none; }
+
   .profile__contact ul {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
