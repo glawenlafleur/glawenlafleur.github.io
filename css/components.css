@@ -261,7 +261,7 @@
   }
 
   .project-dialog::backdrop {
-    background: color-mix(in srgb, var(--canvas) 60%, transparent);
+    background: color-mix(in srgb, var(--canvas) 85%, transparent);
   }
 
   html:has(dialog[open]) { overflow: hidden; }
@@ -364,7 +364,7 @@
     line-height: 1.2;
   }
   .project__body figure { display: grid; gap: var(--s-2); margin-block: var(--s-3); }
-  .project__body figure img { border-radius: 4px; }
+  .project__body figure img { border: 1px solid var(--hairline); border-radius: 4px; }
   .project__body figcaption { color: var(--graphite); font-size: var(--fs-small); }
 
   /* Fallback open/close motion (when View Transitions are unavailable or not in use) */
