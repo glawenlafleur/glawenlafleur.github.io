@@ -209,6 +209,19 @@
   var grid = document.getElementById("projects");
   var pageTitle = document.title;
 
+  // The bottom fade shows only while there is more to scroll
+  function syncMore() {
+    var more = dialogBox.scrollHeight - dialogBox.scrollTop - dialogBox.clientHeight > 8;
+    dialogBox.toggleAttribute("data-more", more);
+  }
+
+  dialogBox.addEventListener("scroll", syncMore, { passive: true });
+  if ("ResizeObserver" in window) {
+    var moreObserver = new ResizeObserver(syncMore);
+    moreObserver.observe(dialogBox);
+    moreObserver.observe(dialogBox.querySelector(".dialog__content"));
+  }
+
   // The project currently shown: { item, details, pushed }
   var current = null;
   var closing = false;
@@ -301,6 +314,7 @@
     dialog.showModal();
     dialogBox.scrollTop = 0;
     if (smoothing) applySmoothing(dialogBox);
+    syncMore();
     dialogTitle.focus({ preventScroll: true });
   }
 

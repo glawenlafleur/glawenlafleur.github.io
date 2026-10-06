@@ -225,6 +225,31 @@
     overscroll-behavior: contain;
   }
 
+  /* Desktop: the scrollbar is hidden (a straight track fights the rounded corners). A soft fade
+     at the bottom edge shows while there is more to scroll (data-more, set in main.js). */
+  @media (min-width: 40em) {
+    .dialog__box {
+      scrollbar-width: none;
+    }
+
+    .dialog__box::-webkit-scrollbar { display: none; }
+
+    .dialog__box::after {
+      content: "";
+      position: sticky;
+      bottom: 0;
+      display: block;
+      height: 5rem;
+      margin-top: -5rem;
+      background: linear-gradient(to bottom, transparent, var(--surface));
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms var(--ease-out);
+    }
+
+    .dialog__box[data-more]::after { opacity: 1; }
+  }
+
   .project-dialog::backdrop {
     background: color-mix(in srgb, var(--canvas) 60%, transparent);
   }
