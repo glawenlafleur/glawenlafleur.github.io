@@ -93,7 +93,7 @@
       <!--
         To add a project, copy one <li class="project"> block, then:
         1. Set the slug in id and href (lowercase, hyphenated, unique)
-        2. Add assets/projects/<slug>/cover.* (4:3 landscape, about 1200x900)
+        2. Add assets/projects/<slug>/cover.* (16:9, about 1600x900, with the focal content inside the centered 4:3 area, which is what the tile shows)
         3. Fill in the title, tagline, details and article
         Put it in the "Projects" list or the "More Work" list. No JavaScript changes are needed.
       -->
@@ -110,11 +110,10 @@
           </a>
           <div class="project__details">
             <p class="project__tagline">Redesigning field data collection for canvassers working in fast-paced, real-world conditions.</p>
-            <dl class="project__meta">
-              <dt>Role</dt><dd>Product design, mobile UX, interaction design</dd>
-              <dt>Platform</dt><dd>Mobile web</dd>
-              <dt>Focus</dt><dd>Navigation, hierarchy, data entry</dd>
-            </dl>
+            <div class="project__credits">
+              <p class="chip chip--role"><span class="visually-hidden">Role: </span>UX/UI Design</p>
+              <ul class="project__tools" role="list" aria-label="Tools"><li class="chip">Figma</li></ul>
+            </div>
             <div class="project__body">
               <h3>Overview</h3>
               <p>Grassroots Unwired is a platform canvassing teams use to collect data, manage outreach, and track engagement in the field. I redesigned the canvassing experience with a mobile-first approach, so it works for people moving quickly through real-world environments.</p>
@@ -180,11 +179,10 @@
           </a>
           <div class="project__details">
             <p class="project__tagline">A futuristic interface built to show off FitMatch body scanning on the Intel Innovation 2023 keynote stage.</p>
-            <dl class="project__meta">
-              <dt>Role</dt><dd>UI design, interaction design</dd>
-              <dt>Platform</dt><dd>Kiosk touchscreen</dd>
-              <dt>Event</dt><dd>Intel Innovation 2023</dd>
-            </dl>
+            <div class="project__credits">
+              <p class="chip chip--role"><span class="visually-hidden">Role: </span>UX/UI Design</p>
+              <ul class="project__tools" role="list" aria-label="Tools"><li class="chip">Figma</li></ul>
+            </div>
             <div class="project__body">
               <h3>Overview</h3>
               <p>I designed this interface to showcase FitMatch body scanning technology at the <a href="https://www.intel.com/content/www/us/en/newsroom/resources/intel-innovation-2023.html" target="_blank" rel="noopener">Intel Innovation 2023 Keynote</a>. During the keynote, CEO Pat Gelsinger did a live demo of the product. It was one of the most exciting projects I've worked on, knowing it would be shown at such a large event and livestreamed to a combined 28K viewers.</p>
@@ -201,6 +199,55 @@
             </div>
           </div>
         </li>
+        <li class="project" id="portfolio-2026">
+          <a class="tile" href="#portfolio-2026">
+            <img class="tile__cover" src="assets/projects/portfolio-2026/cover.png" alt="" width="1600" height="900" loading="lazy" decoding="async">
+            <div class="tile__caption">
+              <h3 class="tile__title">Portfolio, 2026</h3>
+              <p class="tile__tagline">A portfolio built with Claude Code.</p>
+            </div>
+          </a>
+          <div class="project__details">
+            <p class="project__tagline">Designing this portfolio in Figma and building it with Claude Code, with every design and code decision still mine.</p>
+            <div class="project__credits">
+              <p class="chip chip--role"><span class="visually-hidden">Role: </span>UX/UI Design, Web Development</p>
+              <ul class="project__tools" role="list" aria-label="Tools"><li class="chip">Figma</li><li class="chip">Claude Code</li><li class="chip">HTML</li><li class="chip">CSS</li><li class="chip">JavaScript</li></ul>
+            </div>
+            <div class="project__body">
+              <h3>Overview</h3>
+              <p>My last portfolio was a playful one-off. This one is quieter and puts the work first: a single page of project tiles that open into full write-ups. I designed it in Figma and built it with Claude Code, an AI coding assistant that works in my editor. It is plain HTML, CSS and JavaScript, with no framework and no build step.</p>
+              <h3>Working with Claude Code</h3>
+              <p>I treated Claude Code like a fast, literal-minded collaborator. I described what I wanted and why, it wrote a first pass, and I reviewed the result in the browser and pushed back. The design decisions stayed with me: the layout, the type, the spacing, what gets cut. Claude Code took on the repetitive and fiddly work, like measuring, calculating shapes and wiring up states.</p>
+              <p>A few things worked well:</p>
+              <ul>
+                <li>Small, specific requests, one change at a time, instead of "make it better"</li>
+                <li>Giving it the reason behind a change, not only the change</li>
+                <li>Reviewing every diff, and checking the result on desktop and mobile before moving on</li>
+              </ul>
+              <p>Not everything stuck, and that was useful. I tried a frosted pill floating over each cover image to show the role and tools, and it looked detached from the text it described, so it became chips under the tagline. I also tried turning the mobile modal into a bottom sheet you scroll to dismiss, decided I didn't like it, and went back. Being able to try an idea in minutes made it easy to find out it was wrong.</p>
+              <h3>Details I cared about</h3>
+              <p>Most of the polish is in small things:</p>
+              <ul>
+                <li><strong>Smoothed corners.</strong> A CSS border-radius is a plain circular arc. Figma's corner smoothing eases into the curve over a longer stretch, so I draw the tiles and the modal with it. Anything inset inside a rounded shape follows a concentric-corner rule so the curves line up.</li>
+                <li><strong>A tile that becomes the modal.</strong> When you open a project, its cover and box grow out of the tile instead of a modal appearing on top. Where the browser can't do that, it falls back to a simple slide and fade.</li>
+                <li><strong>Colors from the cover.</strong> The role chip takes its tint from the cover image, so each modal feels like part of its project. The lightness is fixed per theme, so the text stays readable on any cover.</li>
+                <li><strong>Covers made to crop.</strong> Each cover is a 16:9 image whose important content sits inside a 4:3 safe area. The tile shows the center crop, and the modal shows everything.</li>
+              </ul>
+              <figure>
+                <img src="assets/projects/portfolio-2026/0.png" alt="Three project modal headers side by side, each with a role chip tinted to match its cover: green for Grassroots Unwired, blue for Intel 3D Fitting Room, and lavender for Minecraft Meets Baldur's Gate" width="1600" height="191" loading="lazy" decoding="async">
+                <figcaption>The role chip takes its color from each project's cover.</figcaption>
+              </figure>
+              <h3>Accessibility</h3>
+              <p>Accessibility was part of the brief, not a final pass. The site has a skip link and visible focus states, and the modal can be closed with Esc or the browser's back button. Every project has its own link, so it can be shared. It respects the system's Light and Dark settings, with a manual switch, and adapts to reduced motion, reduced transparency and increased contrast. Without JavaScript, every project is still readable as a plain page.</p>
+              <figure>
+                <img src="assets/projects/portfolio-2026/1.png" alt="The portfolio on a phone: the project list on the left and an open project modal on the right" width="1600" height="1645" loading="lazy" decoding="async">
+                <figcaption>The same site on mobile: the project list (left) and an open project (right).</figcaption>
+              </figure>
+              <h3>Reflection</h3>
+              <p>Claude Code made me faster at turning an idea into something I could look at, and that changed how I design: I could judge a real, working version instead of imagining it. It didn't replace taste or judgment. The best results came when I was clear about what I wanted and quick to say when something was off. I'd work this way again, with the same habit of reading everything it writes.</p>
+            </div>
+          </div>
+        </li>
         </ul>
       </section>
       <section class="project-section" aria-labelledby="more-work-heading">
@@ -208,7 +255,7 @@
         <ul class="project-grid">
         <li class="project" id="lunar-drift">
           <a class="tile" href="#lunar-drift">
-            <img class="tile__cover" src="assets/projects/lunar-drift/cover.png" alt="" width="1200" height="960" loading="lazy" decoding="async">
+            <img class="tile__cover" src="assets/projects/lunar-drift/cover.png" alt="" width="1200" height="900" loading="lazy" decoding="async">
             <div class="tile__caption">
               <h3 class="tile__title">Lunar Drift</h3>
               <p class="tile__tagline">A brief crack at video game UI.</p>
@@ -216,11 +263,10 @@
           </a>
           <div class="project__details">
             <p class="project__tagline">A space-themed game interface where the UI builds the atmosphere.</p>
-            <dl class="project__meta">
-              <dt>Role</dt><dd>Game UI design, logo design</dd>
-              <dt>Platform</dt><dd>PC game concept</dd>
-              <dt>Focus</dt><dd>Atmosphere, immersion, HUD design</dd>
-            </dl>
+            <div class="project__credits">
+              <p class="chip chip--role"><span class="visually-hidden">Role: </span>Game UI Design</p>
+              <ul class="project__tools" role="list" aria-label="Tools"><li class="chip">Figma</li></ul>
+            </div>
             <div class="project__body">
               <h3>Overview</h3>
               <p>I've always wanted to work in game development. When I first thought about it, I assumed I'd be working on game design and storytelling, and it turns out UI has a huge impact on both. A game's UI can be a complete game-changer (pun intended) for atmosphere and immersion. I wanted to capture that in the design for this space-themed game.</p>
@@ -259,11 +305,10 @@
           </a>
           <div class="project__details">
             <p class="project__tagline">A colorful, playful portfolio that balances professionalism with fun.</p>
-            <dl class="project__meta">
-              <dt>Role</dt><dd>Design, front-end development</dd>
-              <dt>Platform</dt><dd>Web, desktop and mobile</dd>
-              <dt>Focus</dt><dd>Visual identity, CSS blending, interaction details</dd>
-            </dl>
+            <div class="project__credits">
+              <p class="chip chip--role"><span class="visually-hidden">Role: </span>UX/UI Design, Web Development</p>
+              <ul class="project__tools" role="list" aria-label="Tools"><li class="chip">Figma</li><li class="chip">HTML</li><li class="chip">CSS</li><li class="chip">JavaScript</li></ul>
+            </div>
             <div class="project__body">
               <h3>Overview</h3>
               <p>I have redesigned my portfolio more times than I can count. Part of that is an inability to sit still, and part is a perfectionist's attention to detail on projects I care about. For this version I wanted a mix of professionalism and fun, so I chose a much lighter and more colorful theme than earlier iterations.</p>
@@ -297,11 +342,10 @@
           </a>
           <div class="project__details">
             <p class="project__tagline">Logo design for Ginkgo Bioworks' Cybersecurity Awareness Week 2023.</p>
-            <dl class="project__meta">
-              <dt>Role</dt><dd>Illustration, logo design</dd>
-              <dt>Client</dt><dd>Ginkgo Bioworks</dd>
-              <dt>Year</dt><dd>2023</dd>
-            </dl>
+            <div class="project__credits">
+              <p class="chip chip--role"><span class="visually-hidden">Role: </span>Logo Design</p>
+              <ul class="project__tools" role="list" aria-label="Tools"><li class="chip">Procreate</li><li class="chip">Figma</li></ul>
+            </div>
             <div class="project__body">
               <h3>Overview</h3>
               <p>I designed the logo for Ginkgo Bioworks' Cybersecurity Awareness Week in 2023. The goal was a friendly mascot that makes a dry topic approachable and gives the week a recognizable face.</p>
@@ -316,7 +360,7 @@
         </li>
         <li class="project" id="minecraft-baldurs-gate">
           <a class="tile" href="#minecraft-baldurs-gate">
-            <img class="tile__cover" src="assets/projects/minecraft-baldurs-gate/cover.png" alt="" width="1200" height="606" loading="lazy" decoding="async">
+            <img class="tile__cover" src="assets/projects/minecraft-baldurs-gate/cover.png" alt="" width="1200" height="900" loading="lazy" decoding="async">
             <div class="tile__caption">
               <h3 class="tile__title">Minecraft Meets Baldur's Gate</h3>
               <p class="tile__tagline">Serious weapons for a not-so-serious game.</p>
@@ -324,11 +368,10 @@
           </a>
           <div class="project__details">
             <p class="project__tagline">Translating Baldur's Gate 3 weapons into hand-painted, block-built Minecraft models.</p>
-            <dl class="project__meta">
-              <dt>Role</dt><dd>3D modeling, texturing</dd>
-              <dt>Tools</dt><dd>BlockBench</dd>
-              <dt>Focus</dt><dd>Stylization, low-poly translation</dd>
-            </dl>
+            <div class="project__credits">
+              <p class="chip chip--role"><span class="visually-hidden">Role: </span>3D Modeling</p>
+              <ul class="project__tools" role="list" aria-label="Tools"><li class="chip">BlockBench</li></ul>
+            </div>
             <div class="project__body">
               <h3>Overview</h3>
               <p>A collection of 3D models built in BlockBench and inspired by iconic weapons from Baldur's Gate 3. Each one is a stylized interpretation of its in-game counterpart that embraces Minecraft's blocky look.</p>
@@ -361,7 +404,7 @@
         </li>
         <li class="project" id="syphers-gaming">
           <a class="tile" href="#syphers-gaming">
-            <img class="tile__cover" src="assets/projects/syphers-gaming/cover.png" alt="" width="1200" height="960" loading="lazy" decoding="async">
+            <img class="tile__cover" src="assets/projects/syphers-gaming/cover.png" alt="" width="1200" height="685" loading="lazy" decoding="async">
             <div class="tile__caption">
               <h3 class="tile__title">Syphers Gaming</h3>
               <p class="tile__tagline">Branding for a Discord community that lightened up.</p>
@@ -369,11 +412,10 @@
           </a>
           <div class="project__details">
             <p class="project__tagline">A playful rebrand for a gaming community moving from competitive to casual.</p>
-            <dl class="project__meta">
-              <dt>Role</dt><dd>Brand identity, illustration</dd>
-              <dt>Platform</dt><dd>Discord</dd>
-              <dt>Deliverables</dt><dd>Logo, banner, custom emoji</dd>
-            </dl>
+            <div class="project__credits">
+              <p class="chip chip--role"><span class="visually-hidden">Role: </span>Brand Design</p>
+              <ul class="project__tools" role="list" aria-label="Tools"><li class="chip">Procreate</li><li class="chip">Figma</li></ul>
+            </div>
             <div class="project__body">
               <h3>The brief</h3>
               <p>This Discord community reached out as they were shifting from a serious, competitive gaming group to a more relaxed place to hang out and play. They wanted branding that reflected that change in values. The original logo and style, shown below, featured a spooky dark jungle and an aggressive logo that symbolized their competitive roots.</p>
@@ -386,10 +428,6 @@
               <figure>
                 <img src="assets/projects/syphers-gaming/1.png" alt="Logo style guide with a cartoon blue and green snake mascot and several Syphers Gaming wordmark lockups at different sizes and aspect ratios" width="1600" height="762" loading="lazy" decoding="async">
                 <figcaption>The logo style guide.</figcaption>
-              </figure>
-              <figure>
-                <img src="assets/projects/syphers-gaming/2.png" alt="The new server banner: the Syphers Gaming logo and a cartoon snake in a friendly illustrated jungle" width="1600" height="914" loading="lazy" decoding="async">
-                <figcaption>The new server banner.</figcaption>
               </figure>
               <h3>Custom emoji</h3>
               <p>Discord supports custom emoji, so we worked out a few options that extend the mascot's personality into everyday chat.</p>

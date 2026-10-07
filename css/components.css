@@ -156,6 +156,7 @@
     inset-inline: 0;
     inset-block-end: 0;
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--s-1);
     padding: var(--s-3) 2rem var(--s-4);
     border: 0;
@@ -175,10 +176,14 @@
     line-height: 1.25;
   }
 
+  /* One line only: anything longer is cut with an ellipsis */
   .tile__tagline {
+    overflow: hidden;
     color: var(--graphite);
     font-size: var(--fs-small);
     line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .tile:focus-visible { outline-color: var(--iris); }
@@ -280,10 +285,10 @@
     padding: 0;
     border: 1px solid var(--hairline);
     border-radius: var(--r);
-    background: color-mix(in srgb, var(--surface) 85%, transparent);
+    background: color-mix(in srgb, var(--surface) 75%, transparent);
     color: var(--ink);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
     transition: background-color var(--t-hover) var(--ease-out);
   }
 
@@ -306,7 +311,7 @@
 
   .dialog__cover {
     width: 100%;
-    aspect-ratio: 2 / 1;
+    aspect-ratio: 16 / 9;
     max-height: 50dvh;
     object-fit: cover;
   }
@@ -315,7 +320,7 @@
     display: grid;
     gap: var(--s-5);
     width: 100%;
-    max-width: 64ch;
+    max-width: 70ch;
     margin-inline: auto;
     padding-inline: var(--s-5);
   }
@@ -343,17 +348,47 @@
     line-height: 1.4;
   }
 
-  .project__meta {
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    gap: var(--s-2) var(--s-5);
-    padding-block: var(--s-4);
-    border-block: 1px solid var(--hairline);
-    font-size: var(--fs-small);
+  /* Role and tools sit as chips under the tagline: one accent chip for the role, quiet gray
+     chips for each tool. Whole chips wrap onto the next line, never mid-label. */
+  .project__credits {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2);
   }
 
-  .project__meta dt { color: var(--graphite); font-weight: 500; }
-  .project__meta dd { font-weight: 500; }
+  .project__tools { display: contents; }
+
+  .chip {
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    background: var(--fill);
+    color: var(--graphite);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  /* Iris until main.js samples the cover; then a tint and ink in the cover's hue, at fixed
+     lightness per theme so the text always reads. Chroma is capped to keep it calm. */
+  .chip--role {
+    background: color-mix(in srgb, var(--iris) 14%, var(--surface));
+    color: var(--iris);
+    font-weight: 600;
+    white-space: normal;
+  }
+
+  @supports (color: oklch(from red l c h)) {
+    .project__details[style*="--cover-rgb"] .chip--role {
+      background: light-dark(
+        oklch(from rgb(var(--cover-rgb)) 0.92 clamp(0.02, c, 0.06) h),
+        oklch(from rgb(var(--cover-rgb)) 0.32 clamp(0.02, c, 0.06) h));
+      color: light-dark(
+        oklch(from rgb(var(--cover-rgb)) 0.38 clamp(0.04, c, 0.12) h),
+        oklch(from rgb(var(--cover-rgb)) 0.86 clamp(0.04, c, 0.12) h));
+    }
+  }
 
   .project__body { display: grid; gap: var(--s-4); }
   .project__body h3 {
@@ -400,9 +435,12 @@
   }
 
   @media (max-width: 39.999em) {
+    /* The browser's default modal max-height leaves a gap at the bottom; lift it */
     .project-dialog {
+      inset: 0;
       width: 100%;
       height: 100dvh;
+      max-height: none;
       margin: 0;
     }
 
@@ -490,6 +528,47 @@
     overflow: clip;
     animation: -ua-view-transition-group-anim-project-cover var(--t-close) var(--ease-out) both,
       cover-corners-close var(--t-close) var(--ease-out) both;
+  }
+
+  /* The close button rides the same morph: it keeps its place in the dialog's top-right corner
+     while that corner travels from the tile's corner (--vt-close-dx/dy, set from JS) to its
+     settled position, so it always sits inside the modal's outline and never floats loose. */
+  @keyframes close-slide-open {
+    from { translate: var(--vt-close-dx) var(--vt-close-dy); }
+    to { translate: 0 0; }
+  }
+
+  @keyframes close-slide-close {
+    from { translate: 0 0; }
+    to { translate: var(--vt-close-dx) var(--vt-close-dy); }
+  }
+
+  @keyframes close-fade-in {
+    from { opacity: 0; }
+    35%, to { opacity: 1; }
+  }
+
+  @keyframes close-fade-out {
+    from, 65% { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  :root[data-vt="open"]::view-transition-group(project-close) {
+    animation: -ua-view-transition-group-anim-project-close var(--t-open) var(--ease-out) both,
+      close-slide-open var(--t-open) var(--ease-out) both;
+  }
+
+  :root[data-vt="close"]::view-transition-group(project-close) {
+    animation: -ua-view-transition-group-anim-project-close var(--t-close) var(--ease-out) both,
+      close-slide-close var(--t-close) var(--ease-out) both;
+  }
+
+  :root[data-vt="open"]::view-transition-new(project-close) {
+    animation: close-fade-in var(--t-open) linear both;
+  }
+
+  :root[data-vt="close"]::view-transition-old(project-close) {
+    animation: close-fade-out var(--t-close) linear both;
   }
 
   /* Keep the cover above the box they sit in */

@@ -233,6 +233,7 @@
   @media (min-width: 64em) and (min-height: 40em) {
     .page {
       height: 100dvh;
+      padding-block: 0;
       grid-template-rows: minmax(0, 1fr);
       align-items: stretch;
     }
@@ -240,18 +241,33 @@
     .sidebar {
       grid-template-rows: minmax(0, 1fr) auto;
       min-height: 0;
+      padding-block: var(--gap);
     }
 
-    /* Safety net only: shows a scrollbar if the content ever cannot fit */
+    /* Safety net only: scrolls if the content ever cannot fit */
     .profile { overflow-y: auto; }
+
+    /* Scrollbars are hidden on desktop; scrolling still works */
+    .profile,
+    main { scrollbar-width: none; }
+    .profile::-webkit-scrollbar,
+    main::-webkit-scrollbar { display: none; }
 
     /* Padding and negative margin give hover scale and focus rings room inside the scroller */
     main {
       min-height: 0;
       padding: 0.5rem;
+      padding-block: var(--gap) calc(0.5rem + var(--gap));
       margin: -0.5rem;
+      margin-block: 0;
       overflow-y: auto;
       overscroll-behavior: contain;
+    }
+
+    /* Soft fade at the bottom edge while there is more to scroll (data-more, set in main.js) */
+    main[data-more] {
+      -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 5rem), transparent);
+      mask-image: linear-gradient(to bottom, #000 calc(100% - 5rem), transparent);
     }
 
     main:focus-visible {

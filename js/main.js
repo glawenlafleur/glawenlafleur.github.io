@@ -215,6 +215,17 @@
     dialogBox.toggleAttribute("data-more", more);
   }
 
+  // Same for the project list on desktop, where it is the scroller
+  function syncGridMore() {
+    var more = grid.scrollHeight - grid.scrollTop - grid.clientHeight > 8;
+    grid.toggleAttribute("data-more", more);
+  }
+
+  grid.addEventListener("scroll", syncGridMore, { passive: true });
+  window.addEventListener("resize", syncGridMore);
+  syncGridMore();
+  if ("ResizeObserver" in window) new ResizeObserver(syncGridMore).observe(grid);
+
   dialogBox.addEventListener("scroll", syncMore, { passive: true });
   if ("ResizeObserver" in window) {
     var moreObserver = new ResizeObserver(syncMore);
@@ -276,6 +287,9 @@
         "px " + x + "px round " + tileR + "px)";
       to = "inset(0 round " + boxR + "px)";
     }
+    // The close button sits in the dialog's top-right corner, so it travels with that corner
+    root.style.setProperty("--vt-close-dx", tileRect.right - box.right + "px");
+    root.style.setProperty("--vt-close-dy", tileRect.top - box.top + "px");
     root.style.setProperty("--vt-from", from);
     root.style.setProperty("--vt-to", to);
     root.style.setProperty("--vt-cr-tile", (smoothing ? matchingRadius(w, h, tileR) : tileR) + "px");
@@ -292,12 +306,43 @@
     });
   }
 
+  // Samples the cover for its dominant colour and hands it to the role chip as --cover-rgb.
+  // Colourful, mid-tone pixels count most, so a dark background or white glare doesn't win.
+  // The stylesheet turns the sample into a tint and an ink with fixed lightness, so contrast
+  // holds whatever the cover. If sampling fails, the chip keeps its iris fallback.
+  function sampleCover(img, details) {
+    function run() {
+      try {
+        var c = document.createElement("canvas");
+        c.width = c.height = 24;
+        var ctx = c.getContext("2d", { willReadFrequently: true });
+        ctx.drawImage(img, 0, 0, 24, 24);
+        var px = ctx.getImageData(0, 0, 24, 24).data;
+        var r = 0, g = 0, b = 0, total = 0;
+        for (var i = 0; i < px.length; i += 4) {
+          var max = Math.max(px[i], px[i + 1], px[i + 2]) / 255;
+          var min = Math.min(px[i], px[i + 1], px[i + 2]) / 255;
+          var light = (max + min) / 2;
+          var sat = max === min ? 0 : (max - min) / (1 - Math.abs(2 * light - 1));
+          var w = sat * sat * (1 - Math.abs(2 * light - 1));
+          r += px[i] * w; g += px[i + 1] * w; b += px[i + 2] * w; total += w;
+        }
+        if (total < 0.5) return;
+        details.style.setProperty("--cover-rgb",
+          Math.round(r / total) + " " + Math.round(g / total) + " " + Math.round(b / total));
+      } catch (e) { /* tainted canvas or no pixel access: keep the fallback */ }
+    }
+    if (img.complete && img.naturalWidth) run();
+    else img.addEventListener("load", run, { once: true });
+  }
+
   // Moves the project's details into the dialog (moved, not cloned, so ids stay unique)
   function fill(item, pushed) {
     var parts = tileParts(item);
     var details = item.querySelector(".project__details");
     dialogCover.src = parts.cover.currentSrc || parts.cover.src;
     dialogTitle.textContent = parts.title.textContent;
+    sampleCover(parts.cover, details);
     dialogSlot.appendChild(details);
     document.title = parts.title.textContent + ", " + pageTitle;
     current = { item: item, details: details, pushed: pushed };
