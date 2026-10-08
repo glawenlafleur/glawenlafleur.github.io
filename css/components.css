@@ -263,27 +263,41 @@
     pointer-events: none;
   }
 
+  /* The box is a fixed frame. The cover (or the changelog's art) and the close button sit in it, outside
+     the scroller, so the scroller's rubber-banding can only move the text. The scroller starts with a
+     spacer the size of the cover; main.js slides the cover up as it scrolls, never down. */
   .dialog__box {
+    position: relative;
+    display: flex;
+    flex-direction: column;
     max-height: calc(100dvh - 2 * var(--gap));
     --sq-r: var(--dialog-r);
     border-radius: var(--sq-r);
     background: var(--surface);
+    overflow: hidden;
+  }
+
+  .dialog__scroll {
+    position: relative;
+    z-index: 1;
+    flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto;
-    /* No rubber-banding: it would drag the cover away from the top edge and show the box behind */
-    overscroll-behavior: none;
+    /* Keep the bounce, but don't chain the scroll to the page behind */
+    overscroll-behavior: contain;
   }
 
   /* Desktop: the scrollbar is hidden (a straight track fights the rounded corners). A soft fade
      at the bottom edge hints at more content; its strength (--more, set in main.js) follows the scroll
      position, full at the top and gone after a short scroll. */
   @media (min-width: 40em) {
-    .dialog__box {
+    .dialog__scroll {
       scrollbar-width: none;
     }
 
-    .dialog__box::-webkit-scrollbar { display: none; }
+    .dialog__scroll::-webkit-scrollbar { display: none; }
 
-    .dialog__box::after {
+    .dialog__scroll::after {
       content: "";
       position: sticky;
       bottom: 0;
@@ -306,6 +320,9 @@
   /* The changelog's banner: a big </> in the accent color on a light tint of it */
   .dialog__art {
     display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     aspect-ratio: 2 / 1;
     max-height: 50dvh;
@@ -314,6 +331,7 @@
   }
 
   .dialog--changelog .dialog__art { display: block; }
+  .dialog--changelog .dialog__spacer { aspect-ratio: 2 / 1; max-height: 50dvh; }
   .dialog__art svg { display: block; width: 100%; height: 100%; }
 
   .changelog__date {
@@ -354,16 +372,17 @@
   html:has(dialog[open]) { overflow: hidden; }
 
   .dialog__close {
-    position: sticky;
+    position: absolute;
     top: calc(2 * var(--inset));
-    z-index: 1;
+    right: calc(2 * var(--inset));
+    z-index: 2;
     display: grid;
     place-items: center;
     width: 2.75rem;
     height: 2.75rem;
     /* The cover is flush with the modal edges, so the button sits 2 x --inset from the corner,
        which keeps it concentric with the modal's rounded corner */
-    margin: calc(2 * var(--inset)) calc(2 * var(--inset)) calc(-2.75rem - 2 * var(--inset)) auto;
+    margin: 0;
     padding: 0;
     border: 1px solid var(--hairline);
     border-radius: var(--r);
@@ -392,10 +411,16 @@
   }
 
   .dialog__cover {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     aspect-ratio: 16 / 9;
     object-fit: cover;
   }
+
+  /* Holds the cover's place in the scroller */
+  .dialog__spacer { aspect-ratio: 16 / 9; }
 
   .dialog__text {
     display: grid;

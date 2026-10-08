@@ -203,7 +203,9 @@
   var dialog = document.getElementById("project-dialog");
   var dialogShade = dialog.querySelector(".dialog__shade");
   var dialogBox = dialog.querySelector(".dialog__box");
+  var dialogScroll = dialog.querySelector(".dialog__scroll");
   var dialogCover = dialog.querySelector(".dialog__cover");
+  var dialogArt = dialog.querySelector(".dialog__art");
   var dialogTitle = dialog.querySelector(".dialog__title");
   var dialogSlot = dialog.querySelector(".dialog__slot");
   var closeButton = dialog.querySelector(".dialog__close");
@@ -214,9 +216,18 @@
   // (--more, 0 to 1): full at the top of the content, gone after about 80px of scrolling, so it
   // fades out smoothly instead of switching off, and never washes over images further down.
   function syncMore() {
-    var remaining = dialogBox.scrollHeight - dialogBox.scrollTop - dialogBox.clientHeight;
-    var more = remaining > 8 ? Math.max(0, Math.min(1, 1 - dialogBox.scrollTop / 80)) : 0;
+    var remaining = dialogScroll.scrollHeight - dialogScroll.scrollTop - dialogScroll.clientHeight;
+    var more = remaining > 8 ? Math.max(0, Math.min(1, 1 - dialogScroll.scrollTop / 80)) : 0;
     dialogBox.style.setProperty("--more", more);
+  }
+
+  // The cover sits outside the scroller and follows the scroll position, but only upward: when the
+  // scroller rubber-bands past the top (scrollTop is zero or negative), the cover stays at the top
+  // edge and only the text bounces.
+  function syncCover() {
+    var y = "0 " + -Math.max(0, dialogScroll.scrollTop) + "px";
+    dialogCover.style.translate = y;
+    dialogArt.style.translate = y;
   }
 
   // Same for the project list on desktop, where it is the scroller. The fade (--fade-a) strengthens
@@ -235,11 +246,14 @@
   syncGridMore();
   if ("ResizeObserver" in window) new ResizeObserver(syncGridMore).observe(grid);
 
-  dialogBox.addEventListener("scroll", syncMore, { passive: true });
+  dialogScroll.addEventListener("scroll", function () {
+    syncCover();
+    syncMore();
+  }, { passive: true });
   if ("ResizeObserver" in window) {
     var moreObserver = new ResizeObserver(syncMore);
-    moreObserver.observe(dialogBox);
-    moreObserver.observe(dialogBox.querySelector(".dialog__content"));
+    moreObserver.observe(dialogScroll);
+    moreObserver.observe(dialogScroll.querySelector(".dialog__content"));
   }
 
   // What the dialog currently shows: { item, details, pushed } for a project, or
@@ -388,8 +402,9 @@
 
   function show() {
     dialog.showModal();
-    dialogBox.scrollTop = 0;
+    dialogScroll.scrollTop = 0;
     if (smoothing) applySmoothing(dialogBox);
+    syncCover();
     syncMore();
     dialogTitle.focus({ preventScroll: true });
   }
