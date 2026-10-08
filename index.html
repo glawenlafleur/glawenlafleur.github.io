@@ -633,7 +633,7 @@
         <p class="changelog__summary"><span class="chip">Image performance</span></p>
         <ul>
           <li>Converted every project image (covers and article images) from PNG and JPG to WebP, cutting their total size from about 41.7 MB to about 3.1 MB. Dimensions are unchanged, so nothing shifts on the page.</li>
-          <li>How: I re-encoded each original as a lossy WebP at its existing size, updated every image reference in the page to the new files, and moved the originals into a local backup-content folder that git ignores, so the full-quality files stay on my machine and out of the repository.</li>
+          <li>How: I used Pillow, a Python imaging library, to re-encode each original as a lossy WebP at its existing size, updated every image reference in the page to the new files, and moved the originals into a local backup-content folder that git ignores, so the full-quality files stay on my machine and out of the repository.</li>
           <li>Loaded the headshot and the first row of tile covers right away (high fetch priority, no lazy loading) so the top of the page shows up sooner. Everything further down still loads lazily.</li>
         </ul>
         <h3>Version 2.4 <span class="changelog__date">Oct 8, 2026</span></h3>
