@@ -328,6 +328,7 @@
   // The stylesheet turns the sample into a tint and an ink with fixed lightness, so contrast
   // holds whatever the cover. If sampling fails, the chip keeps its iris fallback.
   function sampleCover(img, details) {
+    var targets = [].concat(details);
     function run() {
       try {
         var c = document.createElement("canvas");
@@ -345,13 +346,19 @@
           r += px[i] * w; g += px[i + 1] * w; b += px[i + 2] * w; total += w;
         }
         if (total < 0.5) return;
-        details.style.setProperty("--cover-rgb",
-          Math.round(r / total) + " " + Math.round(g / total) + " " + Math.round(b / total));
+        var rgb = Math.round(r / total) + " " + Math.round(g / total) + " " + Math.round(b / total);
+        targets.forEach(function (el) { el.style.setProperty("--cover-rgb", rgb); });
       } catch (e) { /* tainted canvas or no pixel access: keep the fallback */ }
     }
     if (img.complete && img.naturalWidth) run();
     else img.addEventListener("load", run, { once: true });
   }
+
+  // The tiles' role chips take the same tint, so sample every cover up front
+  projectTiles.forEach(function (item) {
+    var tile = item.querySelector(".tile");
+    if (tile) sampleCover(tile.querySelector(".tile__cover"), tile);
+  });
 
   // Moves the project's details into the dialog (moved, not cloned, so ids stay unique)
   function fill(item, pushed) {

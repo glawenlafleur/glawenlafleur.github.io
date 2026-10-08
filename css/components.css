@@ -120,7 +120,7 @@
     text-decoration: none;
     outline: 4px solid transparent;
     outline-offset: 4px;
-    transition: outline-color var(--t-hover) var(--ease-out);
+    transition: outline-color 300ms var(--ease-out);
   }
 
   /* The whole tile reads as one button: pointer everywhere, no text selection or image dragging */
@@ -148,7 +148,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: scale var(--t-hover) var(--ease-out);
+    transition: scale 300ms var(--ease-out);
   }
 
   .tile__caption {
@@ -166,7 +166,22 @@
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
     translate: 0 100%;
-    transition: translate 380ms var(--ease-out);
+    transition: translate 480ms var(--ease-out);
+  }
+
+  /* Role chip, top right: slides down from above the tile, in step with the caption. The inset
+     keeps it clear of the 3rem corner curve. */
+  .tile .tile__role {
+    position: absolute;
+    inset-block-start: 2rem;
+    inset-inline-end: 2rem;
+    max-width: calc(50% - 2rem);
+    border: 1px solid var(--hairline);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    translate: 0 calc(-100% - 2rem);
+    transition: translate 480ms var(--ease-out);
   }
 
   .tile__title {
@@ -188,7 +203,8 @@
 
   .tile:focus-visible { outline-color: var(--iris); }
 
-  .tile:focus-visible .tile__caption {
+  .tile:focus-visible .tile__caption,
+  .tile:focus-visible .tile__role {
     translate: 0 0;
   }
 
@@ -200,18 +216,24 @@
   .tile[data-restored]:focus-visible:not(:hover) .tile__caption {
     translate: 0 100%;
   }
+  .tile[data-restored]:focus-visible:not(:hover) .tile__role {
+    translate: 0 calc(-100% - 2rem);
+  }
 
   @media (hover: hover) and (min-width: 40em) {
     .tile:hover { outline-color: var(--iris); }
     .tile:hover .tile__cover { scale: 1.04; }
-    .tile:hover .tile__caption {
+    .tile:hover .tile__caption,
+    .tile:hover .tile__role {
       translate: 0 0;
     }
   }
 
   @media (hover: none) {
     .tile__caption,
-    .tile[data-restored]:focus-visible:not(:hover) .tile__caption {
+    .tile .tile__role,
+    .tile[data-restored]:focus-visible:not(:hover) .tile__caption,
+    .tile[data-restored]:focus-visible:not(:hover) .tile__role {
       translate: 0 0;
     }
   }
@@ -441,7 +463,8 @@
   }
 
   @supports (color: oklch(from red l c h)) {
-    .project__details[style*="--cover-rgb"] .chip--role {
+    .project__details[style*="--cover-rgb"] .chip--role,
+    .tile[style*="--cover-rgb"] .chip--role {
       background: light-dark(
         oklch(from rgb(var(--cover-rgb)) 0.92 clamp(0.02, c, 0.06) h),
         oklch(from rgb(var(--cover-rgb)) 0.32 clamp(0.02, c, 0.06) h));
@@ -464,7 +487,7 @@
     aspect-ratio: 16 / 9;
     margin-block: var(--s-3);
     border: 1px solid var(--hairline);
-    border-radius: 4px;
+    border-radius: 12px;
     overflow: hidden;
     background: var(--fill);
   }
@@ -472,7 +495,7 @@
   .project__body .video iframe { display: block; width: 100%; height: 100%; border: 0; }
 
   .project__body figure { display: grid; gap: var(--s-2); margin-block: var(--s-3); }
-  .project__body figure img { border: 1px solid var(--hairline); border-radius: 4px; }
+  .project__body figure img { border: 1px solid var(--hairline); border-radius: 12px; }
   .project__body figcaption { color: var(--graphite); font-size: var(--fs-small); }
 
   /* Fallback open/close motion (when View Transitions are unavailable or not in use) */
@@ -529,7 +552,8 @@
     .dialog__box { height: 100%; max-height: none; }
 
     /* Captions are always visible on small screens, whatever the pointer */
-    .tile__caption { translate: 0 0; }
+    .tile__caption,
+    .tile .tile__role { translate: 0 0; }
 
     :root:not([data-vt]) .project-dialog {
       scale: 1;
@@ -690,7 +714,7 @@
     clip-path: var(--sq-ring);
     opacity: 0;
     pointer-events: none;
-    transition: opacity var(--t-hover) var(--ease-out);
+    transition: opacity 300ms var(--ease-out);
   }
 
   .project:has(> .tile[data-sq]:focus-visible)::before { opacity: 1; }

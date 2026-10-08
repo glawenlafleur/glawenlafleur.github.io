@@ -4,7 +4,8 @@
     .tile:hover .tile__cover,
     .tile:focus-visible .tile__cover { scale: 1; transition: none; }
 
-    .tile__caption { transition: none; }
+    .tile__caption,
+    .tile .tile__role { transition: none; }
 
     :root:not([data-vt]) .project-dialog,
     :root:not([data-vt]) .project-dialog::backdrop {
@@ -95,7 +96,8 @@
     gap: var(--s-5);
     padding-block-end: var(--s-6);
   }
-  .no-js .tile__caption {
+  .no-js .tile__caption,
+  .no-js .tile .tile__role {
     opacity: 1;
     translate: 0 0;
   }
