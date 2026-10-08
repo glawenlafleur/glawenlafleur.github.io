@@ -201,6 +201,7 @@
   /* Project dialog */
 
   var dialog = document.getElementById("project-dialog");
+  var dialogShade = dialog.querySelector(".dialog__shade");
   var dialogBox = dialog.querySelector(".dialog__box");
   var dialogCover = dialog.querySelector(".dialog__cover");
   var dialogTitle = dialog.querySelector(".dialog__title");
@@ -209,16 +210,24 @@
   var grid = document.getElementById("projects");
   var pageTitle = document.title;
 
-  // The bottom fade shows only while there is more to scroll
+  // The bottom fade is a hint that there is more below. Its strength follows the scroll position
+  // (--more, 0 to 1): full at the top of the content, gone after about 80px of scrolling, so it
+  // fades out smoothly instead of switching off, and never washes over images further down.
   function syncMore() {
-    var more = dialogBox.scrollHeight - dialogBox.scrollTop - dialogBox.clientHeight > 8;
-    dialogBox.toggleAttribute("data-more", more);
+    var remaining = dialogBox.scrollHeight - dialogBox.scrollTop - dialogBox.clientHeight;
+    var more = remaining > 8 ? Math.max(0, Math.min(1, 1 - dialogBox.scrollTop / 80)) : 0;
+    dialogBox.style.setProperty("--more", more);
   }
 
-  // Same for the project list on desktop, where it is the scroller
+  // Same for the project list on desktop, where it is the scroller. The fade (--fade-a) strengthens
+  // as a project reaches further past the bottom edge, over about 96px, and is zero once the last
+  // project is fully in view, so the empty padding after it never gets a fade.
+  var projectTiles = grid.querySelectorAll(".project");
+
   function syncGridMore() {
-    var more = grid.scrollHeight - grid.scrollTop - grid.clientHeight > 8;
-    grid.toggleAttribute("data-more", more);
+    var last = projectTiles[projectTiles.length - 1];
+    var past = last ? last.getBoundingClientRect().bottom - grid.getBoundingClientRect().bottom : 0;
+    grid.style.setProperty("--fade-a", Math.max(0, Math.min(1, past / 96)));
   }
 
   grid.addEventListener("scroll", syncGridMore, { passive: true });
@@ -233,9 +242,28 @@
     moreObserver.observe(dialogBox.querySelector(".dialog__content"));
   }
 
-  // The project currently shown: { item, details, pushed }
+  // What the dialog currently shows: { item, details, pushed } for a project, or
+  // { kind: "changelog", details, pushed } for the changelog
   var current = null;
   var closing = false;
+
+  // The changelog lives in the footer and is moved into the dialog while it is open. After closing,
+  // it is moved back once the dialog has finished fading out.
+  var changelog = document.getElementById("changelog");
+  var changelogHome = changelog.parentNode;
+  var changelogLink = document.querySelector(".site-footer__link");
+  var changelogTimer = 0;
+
+  // The footer shows the newest version in the changelog, so the two cannot drift apart
+  var versionLabel = document.querySelector(".site-footer__version");
+  var latest = /Version (\d+(?:\.\d+)*)/.exec(changelog.querySelector("h3").textContent);
+  if (versionLabel && latest) versionLabel.textContent = "v" + latest[1];
+
+  function flushChangelog() {
+    clearTimeout(changelogTimer);
+    if (changelog.parentNode !== changelogHome) changelogHome.appendChild(changelog);
+    dialog.classList.remove("dialog--changelog");
+  }
 
   function findProject(slug) {
     if (!slug) return null;
@@ -259,12 +287,11 @@
 
   // The dialog's own box is part of the transition too: it is revealed from (and retracts to)
   // the tile's rectangle, in step with the cover. The cover is flush with the box's top, left
-  // and right edges, so no white box shows around it mid-flight.
-  var SHADOW_OFF = "drop-shadow(0 1.5rem 2.5rem rgb(0 0 0 / 0))";
-  var SHADOW_ON = "drop-shadow(0 1.5rem 2.5rem rgb(0 0 0 / 0.35))";
-
+  // and right edges, so no white box shows around it mid-flight. The shadow is a separate layer
+  // (.dialog__shade) so the box's reveal clip doesn't cut it off: it fades in and out with the motion.
   function setBox(on) {
     dialog.style.viewTransitionName = on ? "project-box" : "";
+    dialogShade.style.viewTransitionName = on ? "project-shadow" : "";
     closeButton.style.viewTransitionName = on ? "project-close" : "";
   }
 
@@ -294,16 +321,6 @@
     root.style.setProperty("--vt-to", to);
     root.style.setProperty("--vt-cr-tile", (smoothing ? matchingRadius(w, h, tileR) : tileR) + "px");
     root.style.setProperty("--vt-cr-dialog", (smoothing ? matchingRadius(box.width, box.height, boxR) : boxR) + "px");
-  }
-
-  // The shadow would be clipped during the transition and pop in at the end, so it is
-  // held back while the box moves and then faded in
-  function restoreShadow() {
-    dialog.style.filter = "";
-    dialog.animate([{ filter: SHADOW_OFF }, { filter: SHADOW_ON }], {
-      duration: 250,
-      easing: "ease-out"
-    });
   }
 
   // Samples the cover for its dominant colour and hands it to the role chip as --cover-rgb.
@@ -338,6 +355,7 @@
 
   // Moves the project's details into the dialog (moved, not cloned, so ids stay unique)
   function fill(item, pushed) {
+    flushChangelog();
     var parts = tileParts(item);
     var details = item.querySelector(".project__details");
     dialogCover.src = parts.cover.currentSrc || parts.cover.src;
@@ -349,6 +367,12 @@
   }
 
   function empty() {
+    if (current.kind === "changelog") {
+      document.title = pageTitle;
+      current = null;
+      changelogTimer = setTimeout(flushChangelog, 400);
+      return;
+    }
     var item = current.item;
     item.appendChild(current.details);
     document.title = pageTitle;
@@ -361,6 +385,76 @@
     if (smoothing) applySmoothing(dialogBox);
     syncMore();
     dialogTitle.focus({ preventScroll: true });
+  }
+
+  // The changelog grows out of the footer link when it opens and shrinks back into it when it
+  // closes (the project modals do the same with their tiles). Opened any other way, it scales in
+  // gently from its own centre. With reduced motion it only fades.
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
+
+  // The hidden end of the animation: faded out and, from the link, shrunk and moved onto it
+  function changelogHidden(fromLink) {
+    if (reduceMotion.matches) return { opacity: 0 };
+    var link = changelogLink.getBoundingClientRect();
+    var box = dialog.getBoundingClientRect();
+    var dx = fromLink ? link.left + link.width / 2 - (box.left + box.width / 2) : 0;
+    var dy = fromLink ? link.top + link.height / 2 - (box.top + box.height / 2) : 0;
+    return { opacity: 0, transform: "translate(" + dx + "px, " + dy + "px) scale(" + (fromLink ? 0.12 : 0.96) + ")" };
+  }
+
+  function openChangelog(pushed, fromLink) {
+    if (current) return;
+    flushChangelog();
+    dialog.classList.add("dialog--changelog");
+    dialogTitle.textContent = "Changelog";
+    dialogSlot.appendChild(changelog);
+    document.title = "Changelog, " + pageTitle;
+    current = { kind: "changelog", details: changelog, pushed: pushed };
+    show();
+    // The backdrop fades in through the stylesheet; this is the dialog itself
+    dialog.animate([changelogHidden(fromLink), { opacity: 1, transform: "none" }], {
+      duration: reduceMotion.matches ? 120 : 450,
+      easing: reduceMotion.matches ? "linear" : EASE
+    });
+  }
+
+  // Plays the closing motion, then finishes. The dialog stays open until the motion is done.
+  function closeChangelog(animate) {
+    closing = true;
+    function finish() {
+      teardown();
+      closing = false;
+    }
+    if (!animate || !dialog.open) {
+      finish();
+      return;
+    }
+    var duration = reduceMotion.matches ? 120 : 350;
+    var motion = dialog.animate([{ opacity: 1, transform: "none" }, changelogHidden(true)], {
+      duration: duration,
+      easing: reduceMotion.matches ? "linear" : EASE,
+      fill: "forwards"
+    });
+    var fade = null;
+    try {
+      fade = dialog.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: duration,
+        easing: "ease-out",
+        fill: "forwards",
+        pseudoElement: "::backdrop"
+      });
+    } catch (e) { /* no backdrop animation: it simply disappears at the end */ }
+    function cleanup() {
+      motion.cancel();
+      if (fade) fade.cancel();
+    }
+    motion.finished.then(function () {
+      finish();
+      cleanup();
+    }, function () {
+      finish();
+    });
   }
 
   function openProject(item, options) {
@@ -380,7 +474,6 @@
       setName(parts.cover, false);
       fill(item, pushed);
       setName(dialogCover, true);
-      dialog.style.filter = "none";
       show();
       setTileInsets(parts.tile, tileRect);
       setBox(true);
@@ -389,16 +482,20 @@
       vt.finished.finally(function () {
         setName(dialogCover, false);
         setBox(false);
-        restoreShadow();
       });
     } else {
       setName(parts.cover, false);
       setBox(false);
-      dialog.style.filter = "";
     }
   }
 
   function teardown() {
+    if (current.kind === "changelog") {
+      if (dialog.open) dialog.close();
+      empty();
+      changelogLink.focus({ preventScroll: true });
+      return;
+    }
     var item = current.item;
     var parts = tileParts(item);
     if (dialog.open) dialog.close();
@@ -414,6 +511,10 @@
 
   function closeProject(animate) {
     if (!current || closing) return;
+    if (current.kind === "changelog") {
+      closeChangelog(animate);
+      return;
+    }
     closing = true;
     var item = current.item;
     var parts = tileParts(item);
@@ -471,6 +572,15 @@
     openProject(item, { animate: true, pushed: true });
   });
 
+  changelogLink.addEventListener("click", function (event) {
+    if (event.defaultPrevented || event.button !== 0) return;
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    if (current) return;
+    history.pushState(null, "", "#changelog");
+    openChangelog(true, true);
+  });
+
   closeButton.addEventListener("click", requestClose);
 
   dialog.addEventListener("cancel", function (event) {
@@ -495,6 +605,11 @@
   });
 
   window.addEventListener("popstate", function () {
+    if (location.hash === "#changelog") {
+      if (current && current.kind !== "changelog") closeProject(false);
+      if (!current) openChangelog(true, false);
+      return;
+    }
     var item = findProject(location.hash.slice(1));
     if (!item) {
       closeProject(true);
@@ -536,4 +651,5 @@
   // Direct link, e.g. index.html#dolor-sit
   var initial = findProject(location.hash.slice(1));
   if (initial) openProject(initial, { animate: false, pushed: false });
+  else if (location.hash === "#changelog") openChangelog(false, false);
 })();

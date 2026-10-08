@@ -100,4 +100,7 @@
     translate: 0 0;
   }
   .js .project > .project__details { display: none; }
+  /* The changelog is kept in the footer, hidden, and moved into the dialog when opened; without
+     JavaScript it stays readable inline. */
+  .js .site-footer .changelog { display: none; }
 }

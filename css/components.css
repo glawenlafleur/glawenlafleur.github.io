@@ -228,7 +228,17 @@
     background: transparent;
     color: var(--ink);
     overflow: visible;
-    filter: drop-shadow(0 1.5rem 2.5rem rgb(0 0 0 / 0.35));
+  }
+
+  /* The shadow lives on its own layer behind the box: a shadow on the dialog itself would be
+     clipped by the box's reveal animation and could only be faded in afterwards. */
+  .dialog__shade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: var(--dialog-r);
+    box-shadow: 0 1.5rem 2.5rem rgb(0 0 0 / 0.35);
+    pointer-events: none;
   }
 
   .dialog__box {
@@ -237,11 +247,13 @@
     border-radius: var(--sq-r);
     background: var(--surface);
     overflow-y: auto;
-    overscroll-behavior: contain;
+    /* No rubber-banding: it would drag the cover away from the top edge and show the box behind */
+    overscroll-behavior: none;
   }
 
   /* Desktop: the scrollbar is hidden (a straight track fights the rounded corners). A soft fade
-     at the bottom edge shows while there is more to scroll (data-more, set in main.js). */
+     at the bottom edge hints at more content; its strength (--more, set in main.js) follows the scroll
+     position, full at the top and gone after a short scroll. */
   @media (min-width: 40em) {
     .dialog__box {
       scrollbar-width: none;
@@ -254,15 +266,63 @@
       position: sticky;
       bottom: 0;
       display: block;
-      height: 5rem;
-      margin-top: -5rem;
-      background: linear-gradient(to bottom, transparent, var(--surface));
-      opacity: 0;
+      height: 9rem;
+      margin-top: -9rem;
+      background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--surface) 70%, transparent) 55%, var(--surface));
+      opacity: var(--more, 0);
       pointer-events: none;
-      transition: opacity 200ms var(--ease-out);
     }
+  }
 
-    .dialog__box[data-more]::after { opacity: 1; }
+  /* The changelog reuses the project dialog, at about half the width and without a cover */
+  @media (min-width: 40em) {
+    .project-dialog.dialog--changelog { width: min(32rem, calc(100% - 2 * var(--gap))); }
+  }
+
+  .dialog--changelog .dialog__cover { display: none; }
+
+  /* The changelog's banner: a big </> in the accent color on a light tint of it */
+  .dialog__art {
+    display: none;
+    width: 100%;
+    aspect-ratio: 2 / 1;
+    max-height: 50dvh;
+    background: color-mix(in srgb, var(--iris) 14%, var(--surface));
+    color: var(--iris);
+  }
+
+  .dialog--changelog .dialog__art { display: block; }
+  .dialog__art svg { display: block; width: 100%; height: 100%; }
+
+  .changelog__date {
+    margin-left: var(--s-2);
+    color: var(--graphite);
+    font-size: var(--fs-small);
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+
+  /* Release lists get bullets and space between entries, and stay left-aligned: justified,
+     hyphenated lines look rough in the narrow changelog column */
+  .changelog ul {
+    display: grid;
+    gap: var(--s-2);
+    padding-left: 1.25rem;
+    list-style: disc;
+  }
+
+  .project__body.changelog li {
+    padding-left: var(--s-1);
+    text-align: start;
+    hyphens: none;
+  }
+
+  .changelog h3:not(:first-child) { margin-top: var(--s-5); }
+
+  /* The release name is a chip, like the tool chips in project articles */
+  .changelog__summary {
+    display: flex;
+    margin-top: calc(-1 * var(--s-2));
   }
 
   .project-dialog::backdrop {
@@ -337,7 +397,8 @@
   .project__details { display: grid; gap: var(--s-5); }
 
   /* Justified body text. Hyphenation keeps word gaps tight on narrow screens. */
-  .project__body p {
+  .project__body p,
+  .project__body li {
     text-align: justify;
     hyphens: auto;
   }
@@ -398,6 +459,18 @@
     letter-spacing: -0.01em;
     line-height: 1.2;
   }
+  /* Embedded video: a 16:9 frame with the same hairline and corner as the article images */
+  .project__body .video {
+    aspect-ratio: 16 / 9;
+    margin-block: var(--s-3);
+    border: 1px solid var(--hairline);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--fill);
+  }
+
+  .project__body .video iframe { display: block; width: 100%; height: 100%; border: 0; }
+
   .project__body figure { display: grid; gap: var(--s-2); margin-block: var(--s-3); }
   .project__body figure img { border: 1px solid var(--hairline); border-radius: 4px; }
   .project__body figcaption { color: var(--graphite); font-size: var(--fs-small); }
@@ -425,6 +498,15 @@
   }
 
   :root:not([data-vt]) .project-dialog[open]::backdrop { opacity: 1; }
+
+  /* The changelog dialog is animated from script (it grows out of the footer link), so the
+     fallback fade above would only fight it */
+  :root:not([data-vt]) .project-dialog.dialog--changelog {
+    transition: none;
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+  }
 
   @starting-style {
     :root:not([data-vt]) .project-dialog[open] {
@@ -571,7 +653,8 @@
     animation: close-fade-out var(--t-close) linear both;
   }
 
-  /* Keep the cover above the box they sit in */
+  /* Keep the cover above the box they sit in, and the shadow below it */
+  ::view-transition-group(project-shadow) { z-index: 0; }
   ::view-transition-group(project-box) { z-index: 1; }
   ::view-transition-group(project-cover) { z-index: 2; }
   ::view-transition-group(project-close) { z-index: 3; }

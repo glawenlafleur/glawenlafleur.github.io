@@ -105,6 +105,42 @@
     gap: var(--s-2);
   }
 
+  /* Footer: copyright and the changelog link, in small gray text. On desktop it sits
+     under the theme control; everywhere else it is the last thing on the page. */
+  .site-footer {
+    display: grid;
+    gap: var(--s-1);
+    /* Side padding lines the text up with the bio: the profile's padding minus the page's own */
+    padding: var(--s-5) calc(var(--s-5) - var(--gap)) var(--s-3);
+    color: var(--graphite);
+    font-size: 0.75rem;
+    line-height: 1.4;
+    text-align: justify;
+    hyphens: manual;
+  }
+
+  /* The text is justified with a natural, left-aligned last line. "Changelog" and the version float
+     to the right at the end of the text, so they sit at the right edge of the last line (or just
+     below it, if that line is too full to share). flow-root keeps the paragraph tall enough to contain the float. */
+  .site-footer p {
+    display: flow-root;
+    margin: 0;
+  }
+
+  .site-footer__end {
+    float: right;
+    margin-left: var(--s-2);
+    white-space: nowrap;
+  }
+
+  .site-footer__link {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+  }
+
+  .site-footer__link:hover { color: var(--ink); }
+
   /* Project grid */
   .project-grid {
     display: grid;
@@ -158,7 +194,7 @@
     }
 
     /* Contact buttons share one row: email, LinkedIn and GitHub are icon-only circles,
-       the résumé button fills the rest */
+       the resume button fills the rest */
     .profile__contact ul {
       display: flex;
       grid-template-columns: none;
@@ -215,6 +251,7 @@
 
     .sidebar { grid-column: 1; }
     main { grid-column: 2 / -1; }
+    .site-footer { grid-column: 1; padding-inline: var(--s-5); }
 
     .project-grid {
       grid-template-columns: repeat(calc(var(--cols) - 1), minmax(0, 1fr));
@@ -234,15 +271,21 @@
     .page {
       height: 100dvh;
       padding-block: 0;
-      grid-template-rows: minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr) auto;
       align-items: stretch;
     }
 
     .sidebar {
+      grid-row: 1;
       grid-template-rows: minmax(0, 1fr) auto;
       min-height: 0;
-      padding-block: var(--gap);
+      padding-block: var(--gap) 0;
     }
+
+    /* The project list spans both rows; the footer is the second row of the sidebar's column,
+       pulled up into the row gap so it sits close under the theme control */
+    main { grid-row: 1 / -1; }
+    .site-footer { grid-row: 2; margin-top: calc(var(--s-2) - var(--gap)); padding: 0 var(--s-5) var(--s-4); }
 
     /* Safety net only: scrolls if the content ever cannot fit */
     .profile { overflow-y: auto; }
@@ -264,10 +307,11 @@
       overscroll-behavior: contain;
     }
 
-    /* Soft fade at the bottom edge while there is more to scroll (data-more, set in main.js) */
-    main[data-more] {
-      -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 5rem), transparent);
-      mask-image: linear-gradient(to bottom, #000 calc(100% - 5rem), transparent);
+    /* Soft fade at the bottom edge. --fade-a (0 to 1, set in main.js) is how far the last project
+       reaches past the edge, so the fade grows and shrinks smoothly with scrolling. */
+    main {
+      -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 5rem), rgb(0 0 0 / calc(1 - var(--fade-a, 0))));
+      mask-image: linear-gradient(to bottom, #000 calc(100% - 5rem), rgb(0 0 0 / calc(1 - var(--fade-a, 0))));
     }
 
     main:focus-visible {
