@@ -116,7 +116,8 @@
     font-size: 0.75rem;
     line-height: 1.4;
     text-align: justify;
-    hyphens: manual;
+    hyphens: auto;
+    hyphenate-limit-chars: 5 2 2;
   }
 
   /* The text is justified with a natural, left-aligned last line. "Changelog" and the version float
@@ -191,6 +192,7 @@
       max-width: none;
       text-align: justify;
       hyphens: auto;
+      hyphenate-limit-chars: 5 2 2;
     }
 
     /* Contact buttons share one row: email, LinkedIn and GitHub are icon-only circles,

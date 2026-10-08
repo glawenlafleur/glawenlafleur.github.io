@@ -394,7 +394,6 @@
   .dialog__cover {
     width: 100%;
     aspect-ratio: 16 / 9;
-    max-height: 50dvh;
     object-fit: cover;
   }
 
@@ -418,11 +417,14 @@
 
   .project__details { display: grid; gap: var(--s-5); }
 
-  /* Justified body text. Hyphenation keeps word gaps tight on narrow screens. */
+  /* Justified body text. Hyphenation keeps word gaps tight on narrow screens. The limits let shorter
+     words break (at least 5 letters, 2 before and 2 after the hyphen), and "pretty" avoids ragged last lines. */
   .project__body p,
   .project__body li {
     text-align: justify;
     hyphens: auto;
+    hyphenate-limit-chars: 5 2 2;
+    text-wrap: pretty;
   }
 
   .project__tagline {
@@ -550,6 +552,12 @@
     }
 
     .dialog__box { height: 100%; max-height: none; }
+
+    /* Justified text needs about 45 characters a line. A narrower gutter and slightly smaller
+       body text get phones there, so the word gaps stay even. */
+    .dialog__text { padding-inline: var(--s-4); }
+    .project__body p,
+    .project__body li { font-size: 1rem; }
 
     /* Captions are always visible on small screens, whatever the pointer */
     .tile__caption,
