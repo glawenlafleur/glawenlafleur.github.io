@@ -242,7 +242,7 @@
   /* The dialog is only a frame (position, size, shadow). The clipped, scrolling surface
      is .dialog__box, so the smoothed corners can clip it while the shadow follows them. */
   .project-dialog {
-    width: min(64rem, calc(100% - 2 * var(--gap)));
+    width: min(56rem, calc(100% - 2 * var(--gap)));
     max-width: none;
     margin: auto;
     padding: 0;
